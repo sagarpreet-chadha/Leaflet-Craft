@@ -365,6 +365,7 @@ export default class FreeDraw extends FeatureGroup {
         const allPolygons = this.all();
 
         allPolygons.map((p) => {   
+            console.log(p[rawLatLngKey]);
             const latLngArr =  p[rawLatLngKey].map(model => [model.lat, model.lng]);
             const turfPoints = turf.points(latLngArr);
 
@@ -385,7 +386,12 @@ export default class FreeDraw extends FeatureGroup {
                 p[edgesKey].map(edge => this.map.removeLayer(edge));
                 p[edgesKey] = createEdges(this.map, p, this.options);
                 // update rawLatLngkey
-                p[rawLatLngKey]
+                p[rawLatLngKey] = newlatLngArr.map(ll => {
+                    return {
+                        lat: ll[0] ,
+                        lng: ll[1]
+                    }
+                });
             }
         }) 
 
