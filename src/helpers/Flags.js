@@ -66,7 +66,10 @@ export const modeFor = (map, mode, options) => {
     map[instanceKey].fire('mode', { mode });
 
     // Disable the map if the `CREATE` mode is a default flag.
-    mode & CREATE ? map.dragging.disable() : map.dragging.enable();
+    mode & CREATE ? map.dragging.disable() : (mode & DELETEMARKERS ? (map.dragging.disable(),
+    map.touchZoom.disable(),
+    map.doubleClickZoom.disable(),
+    map.scrollWheelZoom.disable()) : map.dragging.enable());
 
     Array.from(polygons.get(map)).forEach(polygon => {
 
