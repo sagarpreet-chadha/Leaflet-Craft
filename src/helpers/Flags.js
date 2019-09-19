@@ -33,6 +33,12 @@ export const DELETE = 4;
 export const APPEND = 8;
 
 /**
+ * @constant DELETEMARKERS
+ * @type {Number}
+ */
+export const DELETEMARKERS = 16;
+
+/**
  * @constant EDIT_APPEND
  * @type {Number}
  */
@@ -42,7 +48,7 @@ export const EDIT_APPEND = EDIT | APPEND;
  * @constant ALL
  * @type {number}
  */
-export const ALL = CREATE | EDIT | DELETE | APPEND;
+export const ALL = CREATE | EDIT | DELETE | APPEND | DELETEMARKERS;
 
 /**
  * @method modeFor
