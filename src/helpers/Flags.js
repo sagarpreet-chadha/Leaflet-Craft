@@ -39,6 +39,12 @@ export const APPEND = 8;
 export const DELETEMARKERS = 16;
 
 /**
+ * @constant DELETEPOINT
+ * @type {Number}
+ */
+export const DELETEPOINT = 32;
+
+/**
  * @constant EDIT_APPEND
  * @type {Number}
  */
@@ -48,7 +54,7 @@ export const EDIT_APPEND = EDIT | APPEND;
  * @constant ALL
  * @type {number}
  */
-export const ALL = CREATE | EDIT | DELETE | APPEND | DELETEMARKERS;
+export const ALL = CREATE | EDIT | DELETE | APPEND | DELETEMARKERS | DELETEPOINT;
 
 /**
  * @method modeFor
@@ -82,7 +88,7 @@ export const modeFor = (map, mode, options) => {
         polygon[edgesKey].forEach(edge => {
 
             // Modify the edge class names based on whether edit mode is enabled.
-            (mode & EDIT) ? DomUtil.removeClass(edge._icon, 'disabled') : DomUtil.addClass(edge._icon, 'disabled');
+            ((mode & DELETEPOINT) || (mode & EDIT)) ? DomUtil.removeClass(edge._icon, 'disabled') : DomUtil.addClass(edge._icon, 'disabled');
 
         });
 

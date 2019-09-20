@@ -9,7 +9,7 @@ import WeakMap from 'es6-weak-map';
 import Symbol from 'es6-symbol';
 import { updateFor } from './helpers/Layer';
 import { createFor, removeFor, clearFor } from './helpers/Polygon';
-import { CREATE, EDIT, DELETE, APPEND, DELETEMARKERS, EDIT_APPEND, NONE, ALL, modeFor } from './helpers/Flags';
+import { CREATE, EDIT, DELETE, APPEND, DELETEMARKERS, DELETEPOINT, EDIT_APPEND, NONE, ALL, modeFor } from './helpers/Flags';
 import simplifyPolygon from './helpers/Simplify';
 import UndoRedo from './helpers/UndoRedo';
 import createPolygon from 'turf-polygon';
@@ -432,7 +432,7 @@ export const freeDraw = options => {
     return new FreeDraw(options);
 };
 
-export { CREATE, EDIT, DELETE, APPEND, EDIT_APPEND, NONE, ALL, DELETEMARKERS } from './helpers/Flags';
+export { CREATE, EDIT, DELETE, APPEND, EDIT_APPEND, NONE, ALL, DELETEMARKERS, DELETEPOINT } from './helpers/Flags';
 
 if (typeof window !== 'undefined') {
 
@@ -443,6 +443,7 @@ if (typeof window !== 'undefined') {
     FreeDraw.EDIT = EDIT;
     FreeDraw.DELETE = DELETE;
     FreeDraw.DELETEMARKERS = DELETEMARKERS;
+    FreeDraw.DELETEPOINT = DELETEPOINT;
     FreeDraw.APPEND = APPEND;
     FreeDraw.EDIT_APPEND = EDIT_APPEND;
     FreeDraw.NONE = NONE;

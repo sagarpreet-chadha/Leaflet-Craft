@@ -1,7 +1,7 @@
 import { DivIcon, Marker, DomEvent } from 'leaflet';
 import { polygons, modesKey, notifyDeferredKey, edgesKey } from '../FreeDraw';
 import { updateFor } from './Layer';
-import { CREATE, EDIT, DELETEMARKERS } from './Flags';
+import { CREATE, EDIT, DELETEPOINT } from './Flags';
 import mergePolygons, { fillPolygon } from './Merge';
 
 /**
@@ -29,16 +29,18 @@ export default function createEdges(map, polygon, options) {
     const markers = fetchLayerPoints(polygon).map(point => {
 
         const mode = map[modesKey];
-        const icon = new DivIcon({ className: `leaflet-edge ${mode & EDIT ? '' : 'disabled'}`.trim() });
+        const icon = new DivIcon({ className: `leaflet-edge ${((mode & EDIT) || (mode & DELETEPOINT)) ? '' : 'disabled'}`.trim() });
         const latLng = map.layerPointToLatLng(point);
         const marker = new Marker(latLng, { icon }).addTo(map);
 
         marker.on('contextmenu', () => {
-            const newMarkers = markers.filter(m => (m !== marker));
-            const latlngs = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
-            polygon.setLatLngs(latlngs);
-            polygon[edgesKey].map(edge => map.removeLayer(edge));
-            polygon[edgesKey] = createEdges(map, polygon, options);
+            if (map[modesKey] & DELETEPOINT) {
+                const newMarkers = markers.filter(m => (m !== marker));
+                const latlngs = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
+                polygon.setLatLngs(latlngs);
+                polygon[edgesKey].map(edge => map.removeLayer(edge));
+                polygon[edgesKey] = createEdges(map, polygon, options);
+            }
         });
 
         // Disable the propagation when you click on the marker.
@@ -46,16 +48,16 @@ export default function createEdges(map, polygon, options) {
 
         marker.on('mousedown', function mouseDown(e) {
 
+            if (e.originalEvent.which === 3 && (map[modesKey] & DELETEPOINT)) {
+                return;
+            }
+
             if (!(map[modesKey] & EDIT)) {
 
                 // Polygons can only be created when the mode includes edit.
                 map.off('mousedown', mouseDown);
                 return;
 
-            }
-
-            if (e.originalEvent.which === 3) {
-                return;
             }
 
             // Disable the map dragging as otherwise it's difficult to reposition the edge.
@@ -91,7 +93,7 @@ export default function createEdges(map, polygon, options) {
              */
             function mouseUp() {
                 
-                if (e.originalEvent.which === 3) {
+                if (e.originalEvent.which === 3 && (map[modesKey] & DELETEPOINT)) {
                     return;
                 }
 

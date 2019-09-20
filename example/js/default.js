@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { module } from 'angular';
-import FreeDraw, { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, APPEND, ALL, polygons } from '../../src/FreeDraw';
+import FreeDraw, { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND, ALL, polygons } from '../../src/FreeDraw';
 
 module('leafletApp', []).controller('MapController', $scope => {
 
@@ -8,7 +8,7 @@ module('leafletApp', []).controller('MapController', $scope => {
      * @constant MODES
      * @type {Object}
      */
-    $scope.MODES = { CREATE, EDIT, DELETE, APPEND, NONE, DELETEMARKERS };
+    $scope.MODES = { CREATE, EDIT, DELETE, APPEND, NONE, DELETEMARKERS, DELETEPOINT };
 
     /**
      * @property mode
@@ -37,9 +37,11 @@ module('leafletApp', []).controller('MapController', $scope => {
      */
     $scope.toggleMode = mode => {
 
+        console.log(mode);
+
         if(mode != DELETEMARKERS){
             // disable Delete Markers
-            $scope.mode = $scope.mode & 15;
+            $scope.mode = $scope.mode & 47;
         }
 
         if ($scope.isDisabled(mode)) {
