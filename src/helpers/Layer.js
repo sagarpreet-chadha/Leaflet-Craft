@@ -41,7 +41,7 @@ export const classesFor = (map, mode) => {
         [EDIT]: 'mode-edit',
         [DELETE]: 'mode-delete',
         [APPEND]: 'mode-append',
-        [DELETEMARKERS]: 'mode-delete-markers'
+        [DELETEMARKERS]: 'mode-edit'
     };
 
     Object.keys(modeMap).forEach(key => {

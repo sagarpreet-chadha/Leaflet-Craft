@@ -226,6 +226,7 @@ export default class FreeDraw extends FeatureGroup {
         const mouseDown = event => {
 
             if((map[modesKey] & DELETEMARKERS)) {
+                
                 const latLngs = new Set();
                 const lineIterator = this.createPath(svg, map.latLngToContainerPoint(event.latlng), options.strokeWidth);
                 const mouseMove = event => {
@@ -353,6 +354,8 @@ export default class FreeDraw extends FeatureGroup {
         };
 
         map.on('mousedown touchstart', mouseDown);
+
+
 
     }
 

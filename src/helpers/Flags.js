@@ -66,17 +66,23 @@ export const modeFor = (map, mode, options) => {
     map[instanceKey].fire('mode', { mode });
 
     // Disable the map if the `CREATE` mode is a default flag.
-    mode & CREATE ? map.dragging.disable() : (mode & DELETEMARKERS ? (map.dragging.disable(),
+    mode & CREATE ?  (map.dragging.disable(),
+    map.touchZoom.enable(),
+    map.doubleClickZoom.enable(),
+    map.scrollWheelZoom.enable()) : (mode & DELETEMARKERS ? (map.dragging.disable(),
     map.touchZoom.disable(),
     map.doubleClickZoom.disable(),
-    map.scrollWheelZoom.disable()) : map.dragging.enable());
+    map.scrollWheelZoom.disable()) : (map.dragging.enable(),
+    map.touchZoom.enable(),
+    map.doubleClickZoom.enable(),
+    map.scrollWheelZoom.enable()));
 
     Array.from(polygons.get(map)).forEach(polygon => {
 
         polygon[edgesKey].forEach(edge => {
 
             // Modify the edge class names based on whether edit mode is enabled.
-            mode & EDIT ? DomUtil.removeClass(edge._icon, 'disabled') : DomUtil.addClass(edge._icon, 'disabled');
+            (mode & EDIT) ? DomUtil.removeClass(edge._icon, 'disabled') : DomUtil.addClass(edge._icon, 'disabled');
 
         });
 

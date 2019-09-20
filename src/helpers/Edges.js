@@ -1,7 +1,7 @@
 import { DivIcon, Marker, DomEvent } from 'leaflet';
-import { polygons, modesKey, notifyDeferredKey } from '../FreeDraw';
+import { polygons, modesKey, notifyDeferredKey, edgesKey } from '../FreeDraw';
 import { updateFor } from './Layer';
-import { CREATE, EDIT } from './Flags';
+import { CREATE, EDIT, DELETEMARKERS } from './Flags';
 import mergePolygons, { fillPolygon } from './Merge';
 
 /**
@@ -33,10 +33,18 @@ export default function createEdges(map, polygon, options) {
         const latLng = map.layerPointToLatLng(point);
         const marker = new Marker(latLng, { icon }).addTo(map);
 
+        marker.on('contextmenu', () => {
+            const newMarkers = markers.filter(m => (m !== marker));
+            const latlngs = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
+            polygon.setLatLngs(latlngs);
+            polygon[edgesKey].map(edge => map.removeLayer(edge));
+            polygon[edgesKey] = createEdges(map, polygon, options);
+        });
+
         // Disable the propagation when you click on the marker.
         DomEvent.disableClickPropagation(marker);
 
-        marker.on('mousedown', function mouseDown() {
+        marker.on('mousedown', function mouseDown(e) {
 
             if (!(map[modesKey] & EDIT)) {
 
@@ -44,6 +52,10 @@ export default function createEdges(map, polygon, options) {
                 map.off('mousedown', mouseDown);
                 return;
 
+            }
+
+            if (e.originalEvent.which === 3) {
+                return;
             }
 
             // Disable the map dragging as otherwise it's difficult to reposition the edge.
@@ -78,6 +90,10 @@ export default function createEdges(map, polygon, options) {
              * @return {void}
              */
             function mouseUp() {
+                
+                if (e.originalEvent.which === 3) {
+                    return;
+                }
 
                 if (!(map[modesKey] & CREATE)) {
 
@@ -94,9 +110,9 @@ export default function createEdges(map, polygon, options) {
                 // Attempt to simplify the polygon to prevent voids in the polygon.
                 fillPolygon(map, polygon, options);
 
-                // Merge the polygons if the options.
+                // Merge the polygons if the options allow using a two-pass approach as this yields the better results.
                 const merge = () => mergePolygons(map, Array.from(polygons.get(map)), options);
-                options.mergePolygons && merge();
+                options.mergePolygons && merge() && merge();
 
                 // Trigger the event for having modified the edges of a polygon, unless the `notifyAfterEditExit`
                 // option is equal to `true`, in which case we'll defer the notification.
