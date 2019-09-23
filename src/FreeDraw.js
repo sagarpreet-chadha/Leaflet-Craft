@@ -17,6 +17,8 @@ import { compose, head } from 'ramda';
 import * as turf from '@turf/helpers'
 import pointsWithinPolygon from '@turf/points-within-polygon'
 import createEdges from './helpers/Edges'
+import { latLngsToClipperPoints } from './helpers/Simplify';
+import { Clipper, PolyFillType } from 'clipper-lib';
 
 export const history = UndoRedo();
 
@@ -366,14 +368,14 @@ export default class FreeDraw extends FeatureGroup {
         const turfPolygon = toTurfPolygon(Array.from(latLngs));
         
         const allPolygons = this.all();
+        
+        const deletedPolygons =[];
+        allPolygons.map((p) => {
 
-        allPolygons.map((p) => {   
-            console.log(p[rawLatLngKey]);
             const latLngArr =  p[rawLatLngKey].map(model => [model.lat, model.lng]);
             const turfPoints = turf.points(latLngArr);
 
             const containedMarkers = pointsWithinPolygon(turfPoints, turfPolygon);
-            console.log(containedMarkers);
 
             if(containedMarkers.features.length !== 0) {
                 const selectedMarkers = [];
@@ -383,18 +385,17 @@ export default class FreeDraw extends FeatureGroup {
                 const newlatLngArr =  latLngArr.filter(ll => {
                     return !selectedMarkers.some(sm => sm === ll)
                 });
-                console.log(latLngArr);
-                console.log(newlatLngArr);
+            
+                deletedPolygons.push(p[polygonID]);
+                removeFor(this.map, p);
+
                 p.setLatLngs(newlatLngArr);
-                p[edgesKey].map(edge => this.map.removeLayer(edge));
-                p[edgesKey] = createEdges(this.map, p, this.options);
-                // update rawLatLngkey
-                p[rawLatLngKey] = newlatLngArr.map(ll => {
-                    return {
-                        lat: ll[0] ,
-                        lng: ll[1]
-                    }
-                });
+                const points = latLngsToClipperPoints(this.map, p.getLatLngs()[0]);
+
+                const newLatLngs = points.map(model => this.map.layerPointToLatLng(new Point(model.X, model.Y)));
+                 console.log("newLatLngs");
+                 console.log(newLatLngs);
+                createFor(this.map, newLatLngs, this.options, true, p[polygonID], 0);
             }
         }) 
 

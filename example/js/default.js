@@ -37,7 +37,7 @@ module('leafletApp', []).controller('MapController', $scope => {
      */
     $scope.toggleMode = mode => {
 
-        console.log(mode);
+        //console.log(mode);
 
         if(mode != DELETEMARKERS){
             // disable Delete Markers
