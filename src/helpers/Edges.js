@@ -37,10 +37,6 @@ export default function createEdges(map, polygon, options) {
 
         marker.on('contextmenu', () => {
 
-            // 'marker' is still in markers. 
-            // so remove marker from markers so that unnecessary data is not there.
-            // make new polygon here also?
-
             if (map[modesKey] & DELETEPOINT) {
                 const newMarkers = markers.filter(m => (m !== marker));
                 const latLngArr = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
@@ -53,9 +49,7 @@ export default function createEdges(map, polygon, options) {
                 const newLatLngs = points.map(model => map.layerPointToLatLng(new Point(model.X, model.Y)));
               
                 createFor(map, newLatLngs, options, true, polygon[polygonID], 0);
-                //polygon.setLatLngs(latLngArr);
-                //polygon[edgesKey].map(edge => map.removeLayer(edge));
-                //polygon[edgesKey] = createEdges(map, polygon, options);
+                
             }
         });
 
