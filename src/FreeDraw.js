@@ -16,9 +16,8 @@ import createPolygon from 'turf-polygon';
 import { compose, head } from 'ramda';
 import * as turf from '@turf/helpers'
 import pointsWithinPolygon from '@turf/points-within-polygon'
-import createEdges from './helpers/Edges'
 import { latLngsToClipperPoints } from './helpers/Simplify';
-import { Clipper, PolyFillType } from 'clipper-lib';
+
 
 export const history = UndoRedo();
 
@@ -369,7 +368,6 @@ export default class FreeDraw extends FeatureGroup {
         
         const allPolygons = this.all();
         
-        const deletedPolygons =[];
         allPolygons.map((p) => {
 
             const latLngArr =  p[rawLatLngKey].map(model => [model.lat, model.lng]);
@@ -386,15 +384,13 @@ export default class FreeDraw extends FeatureGroup {
                     return !selectedMarkers.some(sm => sm === ll)
                 });
             
-                deletedPolygons.push(p[polygonID]);
                 removeFor(this.map, p);
 
                 p.setLatLngs(newlatLngArr);
                 const points = latLngsToClipperPoints(this.map, p.getLatLngs()[0]);
 
                 const newLatLngs = points.map(model => this.map.layerPointToLatLng(new Point(model.X, model.Y)));
-                 console.log("newLatLngs");
-                 console.log(newLatLngs);
+              
                 createFor(this.map, newLatLngs, this.options, true, p[polygonID], 0);
             }
         }) 

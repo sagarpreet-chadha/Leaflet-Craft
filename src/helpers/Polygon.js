@@ -82,8 +82,7 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
         const polygon = new Polygon(latLngs, {
             ...defaultOptions, ...options, className: 'leaflet-polygon'
         }).addTo(map);
-        console.log("polygon 123");
-        console.log(polygon);
+      
         // Attach the edges to the polygon.
         polygon[edgesKey] = createEdges(map, polygon, options);
         polygon[rawLatLngKey] = latLngs;

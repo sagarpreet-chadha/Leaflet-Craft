@@ -1,8 +1,10 @@
-import { DivIcon, Marker, DomEvent } from 'leaflet';
-import { polygons, modesKey, notifyDeferredKey, edgesKey } from '../FreeDraw';
+import { DivIcon, Marker, DomEvent, Point } from 'leaflet';
+import { polygons, modesKey, notifyDeferredKey, polygonID } from '../FreeDraw';
 import { updateFor } from './Layer';
 import { CREATE, EDIT, DELETEPOINT } from './Flags';
 import mergePolygons, { fillPolygon } from './Merge';
+import { latLngsToClipperPoints } from './Simplify';
+import { createFor, removeFor } from './Polygon';
 
 /**
  * @method createEdges
@@ -34,12 +36,26 @@ export default function createEdges(map, polygon, options) {
         const marker = new Marker(latLng, { icon }).addTo(map);
 
         marker.on('contextmenu', () => {
+
+            // 'marker' is still in markers. 
+            // so remove marker from markers so that unnecessary data is not there.
+            // make new polygon here also?
+
             if (map[modesKey] & DELETEPOINT) {
                 const newMarkers = markers.filter(m => (m !== marker));
-                const latlngs = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
-                polygon.setLatLngs(latlngs);
-                polygon[edgesKey].map(edge => map.removeLayer(edge));
-                polygon[edgesKey] = createEdges(map, polygon, options);
+                const latLngArr = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
+               
+                removeFor(map, polygon);
+             
+                polygon.setLatLngs(latLngArr);
+                const points = latLngsToClipperPoints(map, polygon.getLatLngs()[0]);
+
+                const newLatLngs = points.map(model => map.layerPointToLatLng(new Point(model.X, model.Y)));
+              
+                createFor(map, newLatLngs, options, true, polygon[polygonID], 0);
+                //polygon.setLatLngs(latLngArr);
+                //polygon[edgesKey].map(edge => map.removeLayer(edge));
+                //polygon[edgesKey] = createEdges(map, polygon, options);
             }
         });
 
