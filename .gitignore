@@ -7,8 +7,6 @@ node_modules
 npm-debug.log
 
 # build
-example/js/build.js
-example/css/leaflet.css
 
 # editor
 .vscode/
