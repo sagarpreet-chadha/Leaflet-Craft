@@ -29,6 +29,10 @@ export const undoRedoControl =  L.Control.extend({
         
         child.onclick = function(e) {
 
+            if(icon.style.opacity === 0.3) {
+                return;
+            }
+
             if(type === "undo") {
                 undoHandler(map);
             } else {
@@ -67,7 +71,8 @@ export const undoRedoControl =  L.Control.extend({
         pubSub.subscribe("Existing_Polygon_is_edited_and_it_is_non_overlapping", this.enableDisableButton);
 
         var container = L.DomUtil.create('div', 'undo-redo-buttons-container');
-
+        L.DomEvent.disableClickPropagation(container);
+        
         this.addButton(container, map, "undo", "Undo");
         this.addButton(container, map, "redo", "Redo");
         
