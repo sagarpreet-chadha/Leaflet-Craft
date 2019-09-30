@@ -297,31 +297,12 @@ export default class FreeDraw extends FeatureGroup {
              * @constant latLngs
              * @type {Set}
              */
+          
             const latLngs = new Set();
+            
             const toTurfPolygon = compose(createPolygon, x => [x], x => [...x, head(x)], this.latLngsToTuple);
 
-
-            // L.Icon.MapKnitterIcon = L.Icon.extend({
-            //     options: {
-            //       iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-            //       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            //       iconSize: [12, 21],
-            //       iconAnchor: [6, 21],
-            //       popupAnchor: [1, -34],
-            //       shadowSize: [20, 20]
-            //     }
-            // });
-
-            // L.icon.mapKnitterIcon = function () {
-            //     return new L.Icon.MapKnitterIcon();
-            // };
-
-            // var redDotIcon =new L.icon.mapKnitterIcon();
-            
-            // var popup = L.marker(map.getCenter(), {icon: redDotIcon}).addTo(map);
-
             var popup = L.popup();
-
 
             // Create the line iterator and move it to its first `yield` point, passing in the start point
             // from the mouse down event.
@@ -352,10 +333,6 @@ export default class FreeDraw extends FeatureGroup {
                 currentArea = currentArea/1000000 ;
                 currentArea = currentArea.toPrecision(7);
 
-                
-               // popup.setLatLng(map.containerPointToLatLng(point));
-              //  popup.setContent(currentArea + " meter sq");
-
                 popup
                 .setLatLng(map.containerPointToLatLng(point))
                 .setContent(currentArea + " Km sq")
@@ -372,8 +349,6 @@ export default class FreeDraw extends FeatureGroup {
              * @return {Function}
              */
             const mouseUp = (_, create = true) => {
-
-                //map.removeLayer(popup);
 
                 // Remove the ability to invoke `cancel`.
                 map[cancelKey] = () => {};
@@ -412,9 +387,7 @@ export default class FreeDraw extends FeatureGroup {
         };
 
         map.on('mousedown touchstart', mouseDown);
-
-
-
+    
     }
 
     latLngsToTuple(latLngs) {
