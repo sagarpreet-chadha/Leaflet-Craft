@@ -127,12 +127,11 @@ export default class FreeDraw extends FeatureGroup {
             const history = UndoRedo();
             // Set Undo Redo Listeners
             history.attachListeners(map);
-            pubSub.subscribe('Add_Undo_Redo', maintainStackStates)
+            pubSub.subscribe('Add_Undo_Redo', maintainStackStates);
+            map.addControl(new undoRedoControl(this.options));
         }
 
         map.addControl(new customControl(this.options));
-        map.addControl(new undoRedoControl(this.options));
-
     }
 
     /**

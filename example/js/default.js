@@ -56,22 +56,11 @@ module('leafletApp', []).controller('MapController', $scope => {
 
             // Instantiate L.Map and the FreeDraw layer, passing in the default mode.
             const map = new L.Map(element[0], { doubleClickZoom: false }).setView([23, 80], 6);
-            const freeDraw = window.freeDraw = new FreeDraw({ mode: ALL^DELETEMARKERS });
+            const freeDraw = window.freeDraw = new FreeDraw({ mode: ALL^DELETEMARKERS, undoRedo: true }); // undo redo is true by default
 
             // Add the tile layer and the FreeDraw layer.
             L.tileLayer(scope.TILE_URL).addTo(map);
             map.addLayer(freeDraw);
-
-            // freeDraw.on('mode', event => {
-
-            //     // Memorise the mode and re-render the directive.
-            //     scope.mode = event.mode;
-            //     !scope.$root.$$phase && scope.$apply();
-
-            // });
-
-            // Listen for a change in the mode.
-            // scope.$watch('mode', mode => freeDraw.mode(mode));
 
             document.addEventListener('keydown', event => {
 
