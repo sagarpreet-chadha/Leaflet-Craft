@@ -72,6 +72,7 @@ export const notifyDeferredKey = Symbol('freedraw/notify-deferred');
 export const edgesKey = Symbol('freedraw/edges');
 export const rawLatLngKey = Symbol('freedraw/rawLatLngs');
 export const polygonID = Symbol('freedraw/polygonID');
+export const polygonArea = Symbol('freedraw/polygonArea');
 /**
  * @constant cancelKey
  * @type {Symbol}
@@ -211,7 +212,7 @@ export default class FreeDraw extends FeatureGroup {
      * @return {Array}
      */
     all() {
-        return Array.from(polygons.get(this.map));
+        return (polygons.get(this.map));
     }
 
     /**

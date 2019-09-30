@@ -51,7 +51,8 @@ export const customControl =  L.Control.extend({
     onAdd: function (map) {
 
         var container = L.DomUtil.create('div', 'edit-mode-buttons-container');
-
+        L.DomEvent.disableClickPropagation(container);
+        
         this.addButton(container, CREATE, map, this.mapOptions, "create", "Create Polygon");
         this.addButton(container, EDIT, map, this.mapOptions, "gesture", "Edit Polygon");
         this.addButton(container, DELETE, map, this.mapOptions, "delete_forever", "Delete Polygon");
