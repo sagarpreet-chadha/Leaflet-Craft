@@ -29,6 +29,10 @@ export const undoRedoControl =  L.Control.extend({
         
         child.onclick = function(e) {
 
+            if(icon.style.opacity === 0.3) {
+                return;
+            }
+
             if(type === "undo") {
                 undoHandler(map);
             } else {
@@ -36,6 +40,7 @@ export const undoRedoControl =  L.Control.extend({
             }
             stopPropagation(e);
             e.preventDefault();
+            L.DomEvent.disableClickPropagation(container);
         }
 
 

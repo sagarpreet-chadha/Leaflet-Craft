@@ -43,6 +43,7 @@ export const customControl =  L.Control.extend({
                 icon.style.opacity = 0.3;
             }
             toggleMode(mode, map, mapOptions);
+            L.DomEvent.disableClickPropagation(container);
         }
 
 
