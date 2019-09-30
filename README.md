@@ -1,3 +1,5 @@
+# Leaflet-Craft 
+
 ![Travis](http://img.shields.io/travis/Wildhoney/Leaflet.FreeDraw.svg?style=flat-square)
 &nbsp;
 ![npm](http://img.shields.io/npm/v/leaflet-freedraw.svg?style=flat-square)
