@@ -72,6 +72,7 @@ export const notifyDeferredKey = Symbol('freedraw/notify-deferred');
 export const edgesKey = Symbol('freedraw/edges');
 export const rawLatLngKey = Symbol('freedraw/rawLatLngs');
 export const polygonID = Symbol('freedraw/polygonID');
+export const polygonArea = Symbol('freedraw/polygonArea');
 /**
  * @constant cancelKey
  * @type {Symbol}
