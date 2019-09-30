@@ -89,7 +89,7 @@ module('leafletApp', []).controller('MapController', $scope => {
             });
 
             // Exposed for testing purposes.
-            window._polygons = polygons.get(map);
+            window._polygons = freeDraw.all();
 
         }
 
