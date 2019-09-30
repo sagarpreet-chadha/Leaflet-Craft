@@ -26,7 +26,7 @@ export const customControl =  L.Control.extend({
             icon.style.opacity = 1;
         }
         
-        child.onclick = function(){
+        child.onclick = function() {
             // toggle logic
             if(icon.style.opacity == 0.3) {
                 if(mode === DELETEMARKERS) {
