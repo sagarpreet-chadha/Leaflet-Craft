@@ -42,7 +42,7 @@ export const classesFor = (map, mode) => {
         [DELETE]: 'mode-delete',
         [APPEND]: 'mode-append',
         [DELETEMARKERS]: 'mode-edit',
-        [DELETEPOINT]: 'mode-edit',
+        [DELETEPOINT]: 'mode-edit'
     };
 
     Object.keys(modeMap).forEach(key => {

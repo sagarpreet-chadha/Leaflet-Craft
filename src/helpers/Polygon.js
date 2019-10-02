@@ -1,4 +1,7 @@
 import { LineUtil, Point, Polygon, DomEvent } from 'leaflet';
+import turfArea from '@turf/area';
+import createPolygon from 'turf-polygon';
+import { compose, head } from 'ramda';
 import { defaultOptions, edgesKey, modesKey, polygons, rawLatLngKey, polygonID, polygonArea } from '../FreeDraw';
 import { updateFor } from './Layer';
 import createEdges from './Edges';
@@ -7,9 +10,6 @@ import handlePolygonClick from './Polygon';
 import concavePolygon from './Concave';
 import mergePolygons, { isIntersectingPolygon } from './Merge';
 import { pubSub } from './PubSub';
-import turfArea from '@turf/area';
-import createPolygon from 'turf-polygon';
-import { compose, head } from 'ramda';
 
 /**
  * @method appendEdgeFor
@@ -54,6 +54,10 @@ const appendEdgeFor = (map, polygon, options, { parts, newPoint, startPoint, end
     polygon[edgesKey].map(edge => map.removeLayer(edge));
     polygon[edgesKey] = createEdges(map, polygon, options);
 
+};
+
+const latLngsToTuple = latLngs => {
+    return latLngs.map(model => [model.lat, model.lng]);
 };
 
 /**
@@ -120,7 +124,7 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
 
     if (addedPolygons.length === 1 && updateStackState) {
         const count = createFor.count;
-        const data = {map, addedPolygons, options, preventMutations, isIntersecting, count, pid, from};
+        const data = { map, addedPolygons, options, preventMutations, isIntersecting, count, pid, from };
         pubSub.publish('Add_Undo_Redo', data);
     }
 
@@ -143,10 +147,6 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
     return addedPolygons;
 
 };
-
-const latLngsToTuple = (latLngs)  => {
-    return latLngs.map(model => [model.lat, model.lng]);
-}
 
 /**
  * @method removeFor
