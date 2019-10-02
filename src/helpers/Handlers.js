@@ -107,7 +107,7 @@ export const undoHandler = map => {
             });
         }
 
-        pubSub.publish('Stack_State_Updated', {map, undoMainStack, redoMainStack});
+        pubSub.publish('STACK_STATE_UPDATED', {map, undoMainStack, redoMainStack});
     };
 
     export const redoHandler = map => {
@@ -136,5 +136,5 @@ export const undoHandler = map => {
         // If Polygon has no State in UNDO STACK -> Simply draw REDO polygon
             redoPoppedEl && createFor(map, redoPoppedEl[rawLatLngKey], redoPoppedEl._options, true, id, 0);
         }
-        pubSub.publish('Stack_State_Updated', {map, undoMainStack, redoMainStack});
+        pubSub.publish('STACK_STATE_UPDATED', {map, undoMainStack, redoMainStack});
     };

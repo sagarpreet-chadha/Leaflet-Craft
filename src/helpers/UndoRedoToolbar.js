@@ -63,12 +63,12 @@ export const undoRedoControl =  L.Control.extend({
    
     onAdd: function (map) {
 
-        pubSub.subscribe("Stack_State_Updated", this.enableDisableButton);
-        pubSub.subscribe("Polygon_made_is_overlapping_with_other_polygons", this.enableDisableButton);
-        pubSub.subscribe("Polygon_to_undo_is_merged_polygon", this.enableDisableButton);
-        pubSub.subscribe("Polygon_to_redo_is_merged_polygon", this.enableDisableButton);
-        pubSub.subscribe("Simple_new_Polygon_is_created", this.enableDisableButton);
-        pubSub.subscribe("Existing_Polygon_is_edited_and_it_is_non_overlapping", this.enableDisableButton);
+        pubSub.subscribe("STACK_STATE_UPDATED", this.enableDisableButton);
+        pubSub.subscribe("POLYGON_OVERLAPS_OTHER_POLYGON", this.enableDisableButton);
+        pubSub.subscribe("UNDO_MERGED_POLYGON", this.enableDisableButton);
+        pubSub.subscribe("REDO_MERGED_POLYGON", this.enableDisableButton);
+        pubSub.subscribe("SIMPLE_POLYGON_CREATED", this.enableDisableButton);
+        pubSub.subscribe("POLYGON_EDITED_AND_IS_NON_OVERLAPPING", this.enableDisableButton);
 
         var container = L.DomUtil.create('div', 'undo-redo-buttons-container');
         L.DomEvent.disableClickPropagation(container);
