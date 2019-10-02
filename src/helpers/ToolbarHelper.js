@@ -11,15 +11,15 @@ export const toggleMode = (mode, map = false, options) => {
 
     let ScopeMode = map[modesKey];
 
-    if (mode != DELETEMARKERS) {
+    if (mode !== DELETEMARKERS) {
         // disable Delete Markers
-        ScopeMode = ScopeMode & 47;
+        ScopeMode &= 47;
     }
 
     if (isDisabled(mode, ScopeMode)) {
 
         // Enabled the mode.
-        ScopeMode = ScopeMode | mode;
+        ScopeMode |= mode;
         if (mode === DELETEMARKERS) {
             // disable all others
             ScopeMode = SCOPE_MODES.NONE | mode;
@@ -30,7 +30,7 @@ export const toggleMode = (mode, map = false, options) => {
     }
 
     // Otherwise disable it.
-    ScopeMode = ScopeMode ^ mode;
+    ScopeMode ^= mode;
     modeFor(map, ScopeMode, options);
 
 };

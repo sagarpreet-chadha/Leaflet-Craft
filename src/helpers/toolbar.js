@@ -37,7 +37,7 @@ export const customControl = L.Control.extend({
                     });
                 } else {
                     container.childNodes[5].firstChild.style.opacity = 0.3;
-                }    
+                }
                 icon.style.opacity = 1;
             } else {
                 icon.style.opacity = 0.3;
