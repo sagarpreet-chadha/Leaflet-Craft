@@ -257,7 +257,7 @@ export default class FreeDraw extends FeatureGroup {
                 // Create the path when the user moves their cursor.
                 map.on('mousemove touchmove', mouseMove);
 
-                const mouseUp = (_, create = true) => {
+                const mouseUp = () => {
 
                     // Remove the ability to invoke `cancel`.
                     map[cancelKey] = () => {};
