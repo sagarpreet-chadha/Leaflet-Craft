@@ -34,8 +34,3 @@ export const toggleMode = (mode, map = false, options) => {
     modeFor(map, ScopeMode, options);
 
 };
-
-    // export const setModeOnly = mode => {
-    //     ScopeMode = SCOPE_MODES.NONE | mode;
-    //     FreeDraw.mode(ScopeMode);
-    // };

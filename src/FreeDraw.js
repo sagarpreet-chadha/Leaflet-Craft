@@ -7,21 +7,20 @@ import { line, curveMonotoneX } from 'd3-shape';
 import Set from 'es6-set';
 import WeakMap from 'es6-weak-map';
 import Symbol from 'es6-symbol';
+import createPolygon from 'turf-polygon';
+import { compose, head } from 'ramda';
+import * as turf from '@turf/helpers';
+import pointsWithinPolygon from '@turf/points-within-polygon';
 import { updateFor } from './helpers/Layer';
 import { createFor, removeFor, clearFor } from './helpers/Polygon';
 import { CREATE, EDIT, DELETE, APPEND, DELETEMARKERS, DELETEPOINT, EDIT_APPEND, NONE, ALL, modeFor } from './helpers/Flags';
 import simplifyPolygon from './helpers/Simplify';
 import UndoRedo from './helpers/UndoRedo';
-import createPolygon from 'turf-polygon';
-import { compose, head } from 'ramda';
-import * as turf from '@turf/helpers'
-import pointsWithinPolygon from '@turf/points-within-polygon'
 import { latLngsToClipperPoints } from './helpers/Simplify';
 import { pubSub } from './helpers/PubSub';
 import { maintainStackStates } from './helpers/UndoRedo';
 import { customControl } from './helpers/toolbar';
 import { undoRedoControl } from './helpers/UndoRedoToolbar';
-
 
 /**
  * @constant polygons
@@ -123,7 +122,7 @@ export default class FreeDraw extends FeatureGroup {
        // Set the mouse events.
         this.listenForEvents(map, svg, this.options);
 
-        if(this.options.undoRedo) {
+        if (this.options.undoRedo) {
             const history = UndoRedo();
             // Set Undo Redo Listeners
             history.attachListeners(map);
@@ -238,21 +237,21 @@ export default class FreeDraw extends FeatureGroup {
          */
         const mouseDown = event => {
 
-            if((map[modesKey] & DELETEMARKERS)) {
-                
+            if ((map[modesKey] & DELETEMARKERS)) {
+
                 const latLngs = new Set();
                 const lineIterator = this.createPath(svg, map.latLngToContainerPoint(event.latlng), options.strokeWidth);
                 const mouseMove = event => {
 
                     // Resolve the pixel point to the latitudinal and longitudinal equivalent.
                     const point = map.mouseEventToContainerPoint(event.originalEvent);
-    
+
                     // Push each lat/lng value into the points set.
                     latLngs.add(map.containerPointToLatLng(point));
-    
+
                     // Invoke the generator by passing in the starting point for the path.
                     lineIterator(new Point(point.x, point.y));
-    
+
                 };
 
                 // Create the path when the user moves their cursor.
@@ -262,17 +261,17 @@ export default class FreeDraw extends FeatureGroup {
 
                     // Remove the ability to invoke `cancel`.
                     map[cancelKey] = () => {};
-    
+
                     // Stop listening to the events.
                     map.off('mouseup', mouseUp);
                     map.off('mousemove', mouseMove);
                     'body' in document && document.body.removeEventListener('mouseleave', mouseUp);
-    
+
                     // Clear the SVG canvas.
                     svg.selectAll('*').remove();
 
                     this.colorMarkersTobeDeleted(latLngs);
-        
+
                 };
 
                 // Clear up the events when the user releases the mouse.
@@ -368,8 +367,6 @@ export default class FreeDraw extends FeatureGroup {
 
         map.on('mousedown touchstart', mouseDown);
 
-
-
     }
 
     colorMarkersTobeDeleted(latLngs) {
@@ -377,35 +374,36 @@ export default class FreeDraw extends FeatureGroup {
         latLngs = latLngs.map(model => [model.lat, model.lng]);
         const toTurfPolygon = compose(createPolygon, x => [x], x => [...x, head(x)]);
         const turfPolygon = toTurfPolygon(Array.from(latLngs));
-        
-        const allPolygons = this.all();
-        
-        allPolygons.map((p) => {
 
-            const latLngArr =  p[rawLatLngKey].map(model => [model.lat, model.lng]);
+        const allPolygons = this.all();
+
+        allPolygons.map(p => {
+
+            const latLngArr = p[rawLatLngKey].map(model => [model.lat, model.lng]);
             const turfPoints = turf.points(latLngArr);
 
             const containedMarkers = pointsWithinPolygon(turfPoints, turfPolygon);
 
-            if(containedMarkers.features.length !== 0) {
+            if (containedMarkers.features.length !== 0) {
                 const selectedMarkers = [];
-                containedMarkers.features.map((f) => {
-                    selectedMarkers.push(f.geometry.coordinates);
-                });     
-                const newlatLngArr =  latLngArr.filter(ll => {
-                    return !selectedMarkers.some(sm => sm === ll)
+                containedMarkers.features.map(f =>
+                    selectedMarkers.push(f.geometry.coordinates)
+                );
+                const newlatLngArr = latLngArr.filter(ll => {
+                    return !selectedMarkers.some(sm => sm === ll);
                 });
-            
+
                 removeFor(this.map, p);
 
                 p.setLatLngs(newlatLngArr);
                 const points = latLngsToClipperPoints(this.map, p.getLatLngs()[0]);
 
                 const newLatLngs = points.map(model => this.map.layerPointToLatLng(new Point(model.X, model.Y)));
-              
+
                 createFor(this.map, newLatLngs, this.options, true, p[polygonID], 0);
             }
-        }) 
+            return p;
+        });
 
     }
 
