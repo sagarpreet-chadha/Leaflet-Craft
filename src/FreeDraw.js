@@ -18,7 +18,7 @@ import * as turf from '@turf/helpers'
 import pointsWithinPolygon from '@turf/points-within-polygon'
 import { latLngsToClipperPoints } from './helpers/Simplify';
 import { pubSub } from './helpers/PubSub';
-import { maintainStackStates } from './helpers/UndoRedo';
+import { maintainStackStates, undoMainStack, undoStackObject } from './helpers/UndoRedo';
 import { customControl } from './helpers/toolbar';
 import { undoRedoControl } from './helpers/UndoRedoToolbar';
 
@@ -373,7 +373,10 @@ export default class FreeDraw extends FeatureGroup {
     }
 
     colorMarkersTobeDeleted(latLngs) {
-
+        
+        if(!latLngs || latLngs.size < 3) {
+            return;
+        }
         latLngs = latLngs.map(model => [model.lat, model.lng]);
         const toTurfPolygon = compose(createPolygon, x => [x], x => [...x, head(x)]);
         const turfPolygon = toTurfPolygon(Array.from(latLngs));
@@ -395,15 +398,20 @@ export default class FreeDraw extends FeatureGroup {
                 const newlatLngArr =  latLngArr.filter(ll => {
                     return !selectedMarkers.some(sm => sm === ll)
                 });
-            
-                removeFor(this.map, p);
+                
+                if(newlatLngArr.length){
+                    removeFor(this.map, p);
 
-                p.setLatLngs(newlatLngArr);
-                const points = latLngsToClipperPoints(this.map, p.getLatLngs()[0]);
+                    p.setLatLngs(newlatLngArr);
+                    const points = latLngsToClipperPoints(this.map, p.getLatLngs()[0]);
 
-                const newLatLngs = points.map(model => this.map.layerPointToLatLng(new Point(model.X, model.Y)));
-              
-                createFor(this.map, newLatLngs, this.options, true, p[polygonID], 0);
+                    const newLatLngs = points.map(model => this.map.layerPointToLatLng(new Point(model.X, model.Y)));
+                
+                    createFor(this.map, newLatLngs, this.options, true, p[polygonID], 0);
+                } else {
+                    undoMainStack.push(p[polygonID]);
+                    undoStackObject[p[polygonID]].push(null);
+                }
             }
         }) 
 
