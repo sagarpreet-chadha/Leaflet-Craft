@@ -40,16 +40,16 @@ export default function createEdges(map, polygon, options) {
             if (map[modesKey] & DELETEPOINT) {
                 const newMarkers = markers.filter(m => (m !== marker));
                 const latLngArr = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
-               
+
                 removeFor(map, polygon);
-             
+
                 polygon.setLatLngs(latLngArr);
                 const points = latLngsToClipperPoints(map, polygon.getLatLngs()[0]);
 
                 const newLatLngs = points.map(model => map.layerPointToLatLng(new Point(model.X, model.Y)));
-              
+
                 createFor(map, newLatLngs, options, true, polygon[polygonID], 0);
-                
+
             }
         });
 
@@ -102,7 +102,7 @@ export default function createEdges(map, polygon, options) {
              * @return {void}
              */
             function mouseUp() {
-                
+
                 if (e.originalEvent.which === 3 && (map[modesKey] & DELETEPOINT)) {
                     return;
                 }

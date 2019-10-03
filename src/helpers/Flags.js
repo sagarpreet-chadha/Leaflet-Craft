@@ -68,15 +68,11 @@ export const modeFor = (map, mode, options) => {
     // Update the mode.
     map[modesKey] = mode;
 
-    console.log(" map[modesKey]");
-    console.log(map[modesKey]);
-    console.log(options);
-
     // Fire the updated mode.
     map[instanceKey].fire('mode', { mode });
 
     // Disable the map if the `CREATE` mode is a default flag.
-    mode & CREATE ?  (map.dragging.disable(),
+    mode & CREATE ? (map.dragging.disable(),
     map.touchZoom.enable(),
     map.doubleClickZoom.enable(),
     map.scrollWheelZoom.enable()) : (mode & DELETEMARKERS ? (map.dragging.disable(),
