@@ -1,6 +1,5 @@
-import "core-js";
-import "@babel/polyfill";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { module } from "angular";
 import FreeDraw, {
   NONE,
