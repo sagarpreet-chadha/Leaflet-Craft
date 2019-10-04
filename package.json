@@ -11,7 +11,9 @@
     "dist"
   ],
   "scripts": {
-    "dev": "parcel example/index.html",
+    "dev": "parcel example/index.html & rimraf",
+    "clean:example": "rimraf example-dist",
+    "example": "yarn clean:example && parcel build example/index.html  --out-dir example-dist --no-minify",
     "build": "rollup -c",
     "test": "npm run lint && npm run spec",
     "spec": "ava && npm run example && mocha tests/functional/FreeDraw.test.js --compilers js:@babel/register",
