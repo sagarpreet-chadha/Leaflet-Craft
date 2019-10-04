@@ -14,7 +14,7 @@
     "dev": "parcel example/index.html & rimraf",
     "clean:example": "rimraf example-dist",
     "example": "yarn clean:example && parcel build example/index.html  --out-dir example-dist --no-minify",
-    "build": "rollup -c",
+    "build": "rimraf dist && rollup -c",
     "test": "npm run lint && npm run spec",
     "spec": "ava && npm run example && mocha tests/functional/FreeDraw.test.js --compilers js:@babel/register",
     "lint": "xo src/*.js src/**/*.js",
@@ -85,6 +85,7 @@
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-node-resolve": "^4.2.4",
+    "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-terser": "^4.0.4",
     "sinon": "^1.17.6",
     "xo": "^0.17.1"
