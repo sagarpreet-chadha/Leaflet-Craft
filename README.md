@@ -39,6 +39,7 @@ Work in PROGRESS:
 
 1. Conversion to Typescript.
 2. Adding functionality to create Polygon via clicking (similar to Leaflet.Draw).
+3. Extending React-Leaflet to support React apps.
 
 
 
