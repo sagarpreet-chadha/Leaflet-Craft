@@ -25,7 +25,9 @@ Extends https://github.com/Wildhoney/Leaflet.FreeDraw made by WildHoney and adds
 We use TURF Area function to calculate the area.
 
 6. Add Hooks:
-We can sunscribe to following Event listeners and can pass a callback function to be executed.
+
+We can subscribe to following Event listeners and can pass a callback function to be executed. Callback function can be asynchronous as well, also the return value should be **TRUE** to continue the event (create/edit/delete) else if your callback function returns **False** then that event is forfeited. 
+This is implemented by ES6 promise.
 
 * Polygon created: Started
 * Polygon created: Ended
