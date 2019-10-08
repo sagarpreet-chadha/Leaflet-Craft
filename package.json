@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "parcel example/index.html & rimraf",
+    "dev": "yarn clean:example && parcel example/index.html & rimraf dist",
     "clean:example": "rimraf example-dist",
     "example": "yarn clean:example && parcel build example/index.html  --out-dir example-dist --no-minify",
     "build": "rimraf dist && rollup -c",

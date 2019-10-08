@@ -385,7 +385,7 @@ export default class FreeDraw extends FeatureGroup {
     if (!latLngs || latLngs.size < 3) {
       return;
     }
-    latLngs = latLngs.map(model => [model.lat, model.lng]);
+    latLngs = Array.from(latLngs).map(model => [model.lat, model.lng]);
     const toTurfPolygon = compose(
       createPolygon,
       x => [x],
@@ -395,7 +395,7 @@ export default class FreeDraw extends FeatureGroup {
 
     const allPolygons = this.all();
 
-    allPolygons.map(p => {
+    Array.from(allPolygons).map(p => {
       const latLngArr = p[rawLatLngKey].map(model => [model.lat, model.lng]);
       const turfPoints = turf.points(latLngArr);
 
