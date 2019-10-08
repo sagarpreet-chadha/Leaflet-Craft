@@ -58,7 +58,13 @@ export const defaultOptions = {
   notifyAfterEditExit: false,
   leaveModeAfterCreate: false,
   strokeWidth: 2,
-  undoRedo: true
+  undoRedo: true,
+  onCreateStart: () => {},
+  onCreateEnd: () => {},
+  onEditStart: () => {},
+  onEditEnd: () => {},
+  onRemoveStart: () => {},
+  onRemoveEnd: () => {}
 };
 
 /**
@@ -147,6 +153,14 @@ export default class FreeDraw extends FeatureGroup {
       pubSub.subscribe("Add_Undo_Redo", maintainStackStates);
       map.addControl(new undoRedoControl(this.options));
     }
+
+    pubSub.subscribe('create-start', this.options.onCreateStart);
+    pubSub.subscribe('create-end', this.options.onCreateEnd);
+    pubSub.subscribe('edit-start', this.options.onEditStart);
+    pubSub.subscribe('edit-end', this.options.onEditEnd);
+    pubSub.subscribe('remove-start', this.options.onRemoveStart);
+    pubSub.subscribe('remove-end', this.options.onRemoveEnd);
+
 
     map.addControl(new customControl(this.options));
   }
@@ -251,7 +265,7 @@ export default class FreeDraw extends FeatureGroup {
      * @param {Object} event
      * @return {void}
      */
-    const mouseDown = event => {
+    const mouseDown = async event => {
       if (map[modesKey] & DELETEMARKERS) {
         const latLngs = new Set();
         const lineIterator = this.createPath(
@@ -303,6 +317,11 @@ export default class FreeDraw extends FeatureGroup {
       if (!(map[modesKey] & CREATE)) {
         // Polygons can only be created when the mode includes create.
         return;
+      } else {
+        const response = await pubSub.publish("create-start");
+        if (response && response.interrupt) {
+          return;
+        }
       }
 
       /**
@@ -363,6 +382,7 @@ export default class FreeDraw extends FeatureGroup {
 
           // Finally invoke the callback for the polygon regions.
           updateFor(map, "create");
+          pubSub.publish("create-end");
 
           // Exit the `CREATE` mode if the options permit it.
           options.leaveModeAfterCreate && this.mode(this.mode() ^ CREATE);

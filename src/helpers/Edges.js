@@ -5,6 +5,7 @@ import { CREATE, EDIT, DELETEPOINT } from './Flags';
 import mergePolygons, { fillPolygon } from './Merge';
 import { latLngsToClipperPoints } from './Simplify';
 import { createFor, removeFor } from './Polygon';
+import { pubSub } from './PubSub';
 
 /**
  * @method createEdges
@@ -56,7 +57,7 @@ export default function createEdges(map, polygon, options) {
         // Disable the propagation when you click on the marker.
         DomEvent.disableClickPropagation(marker);
 
-        marker.on('mousedown', function mouseDown(e) {
+        marker.on('mousedown', async function mouseDown(e) {
 
             if (e.originalEvent.which === 3 && (map[modesKey] & DELETEPOINT)) {
                 return;
@@ -68,6 +69,14 @@ export default function createEdges(map, polygon, options) {
                 map.off('mousedown', mouseDown);
                 return;
 
+            }
+
+            if (map[modesKey] & EDIT) {
+                // Fire edit start event
+                const response = await pubSub.publish('edit-start');
+                if (response && response.interrupt) {
+                    return;
+                }
             }
 
             // Disable the map dragging as otherwise it's difficult to reposition the edge.
@@ -112,6 +121,11 @@ export default function createEdges(map, polygon, options) {
                     // Re-enable the dragging of the map only if created mode is not enabled.
                     map.dragging.enable();
 
+                }
+
+                if (map[modesKey] & EDIT) {
+                    // Fire edit start event
+                    pubSub.publish('edit-end');
                 }
 
                 // Stop listening to the events.
