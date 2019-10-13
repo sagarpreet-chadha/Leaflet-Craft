@@ -213,7 +213,14 @@ export default (map, polygon, options) => {
         const isDeleteAndAppend = Boolean(mode & DELETE && mode & APPEND);
 
         // Partially apply the remove and append functions.
-        const removePolygon = () => removeFor(map, polygon);
+        const removePolygon = async () => {
+            const response = await pubSub.publish("remove-start");
+            if (response && response.interrupt) {
+                return;
+            }
+            removeFor(map, polygon);
+            pubSub.publish("remove-end");
+        }
         const appendEdge = () => appendEdgeFor(map, polygon, options, { parts, newPoint, startPoint, endPoint });
 
         switch (true) {
