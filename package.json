@@ -1,6 +1,6 @@
 {
-  "name": "leaflet-freedraw",
-  "version": "2.12.0",
+  "name": "leaflet-craft",
+  "version": "1.0.0",
   "description": "Zoopla inspired freehand polygon creation using Leaflet.js.",
   "source": "src/FreeDraw.js",
   "main": "dist/leaflet-freedraw.cjs.js",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sagarpreet-chadha/Leaflet-Unified-Draw"
+    "url": "https://github.com/sagarpreet-chadha/Leaflet-Craft"
   },
   "keywords": [
     "leaflet",
@@ -38,9 +38,9 @@
   "author": "Sagarpreet Chadha<chadha.sagarpreet97@gmail.com> | Adam Timberlake <adam.timberlake@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sagarpreet-chadha/Leaflet-Unified-Draw"
+    "url": "https://github.com/sagarpreet-chadha/Leaflet-Craft"
   },
-  "homepage": "https://github.com/sagarpreet-chadha/Leaflet-Unified-Draw",
+  "homepage": "https://github.com/sagarpreet-chadha/Leaflet-Craft",
   "dependencies": {
     "@turf/area": "6.0.1",
     "@turf/helpers": "6.1.4",

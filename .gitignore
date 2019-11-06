@@ -16,6 +16,6 @@ example/css/leaflet.css
 .DS_Store
 src/.DS_Store
 yarn.lock
-dist/
+
 .cache/
 example-dist/
