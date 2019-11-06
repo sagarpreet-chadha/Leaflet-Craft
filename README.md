@@ -1,8 +1,11 @@
 # Leaflet-Craft 
 
 ### DEMO: https://sagarpreet-chadha.github.io/Leaflet-Craft/example/index
+[![npm version](https://badge.fury.io/js/leaflet-craft.svg)](https://badge.fury.io/js/leaflet-craft)
 
 ----
+
+npm : https://www.npmjs.com/package/leaflet-craft
 
 Extends https://github.com/Wildhoney/Leaflet.FreeDraw made by WildHoney and adds following functionalities to it:
 
