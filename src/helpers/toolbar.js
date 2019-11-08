@@ -23,8 +23,10 @@ export const customControl = L.Control.extend({
 
         if (mode === DELETEMARKERS) {
             icon.style.opacity = 0.3;
+            icon.style.color = 'darkslategray';
         } else {
             icon.style.opacity = 1;
+            icon.style.color = 'black';
         }
 
         child.onclick = function() {
@@ -34,13 +36,17 @@ export const customControl = L.Control.extend({
                     // disable all other buttons
                     container.childNodes.forEach(element => {
                         element.firstChild.style.opacity = 0.3;
+                        element.firstChild.style.color = 'darkslategray';
                     });
                 } else {
                     container.childNodes[5].firstChild.style.opacity = 0.3;
+                    container.childNodes[5].firstChild.style.color = 'darkslategray';
                 }
                 icon.style.opacity = 1;
+                icon.style.color = 'black';
             } else {
                 icon.style.opacity = 0.3;
+                icon.style.color = 'darkslategray';
             }
             toggleMode(mode, map, mapOptions);
         };

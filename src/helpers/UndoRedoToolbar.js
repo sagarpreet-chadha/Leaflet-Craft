@@ -19,6 +19,7 @@ export const undoRedoControl = L.Control.extend({
         const icon = L.DomUtil.create('i', 'material-icons', child);
         icon.innerHTML = type;
         icon.style.opacity = 0.3;
+        icon.style.color = 'darkslategray';
         if (type === 'undo') {
             map.undoIcon = icon;
         } else {
@@ -47,14 +48,18 @@ export const undoRedoControl = L.Control.extend({
         data.map.doubleClickZoom.disable();
         if (redoMainStack.empty()) {
             data.map.redoIcon.style.opacity = 0.3;
+            data.map.redoIcon.style.color = 'darkslategray';
         } else {
             data.map.redoIcon.style.opacity = 1;
+            data.map.redoIcon.style.color = 'black';
         }
 
         if (undoMainStack.empty()) {
             data.map.undoIcon.style.opacity = 0.3;
+            data.map.undoIcon.style.color = 'darkslategray';
         } else {
             data.map.undoIcon.style.opacity = 1;
+            data.map.undoIcon.style.color = 'black';
         }
 
     },
