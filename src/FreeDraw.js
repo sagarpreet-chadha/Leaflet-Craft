@@ -36,6 +36,7 @@ import {
 } from "./helpers/UndoRedo";
 import { customControl } from "./helpers/toolbar";
 import { undoRedoControl } from "./helpers/UndoRedoToolbar";
+import {undoHandler, redoHandler} from "./helpers/Handlers";
 
 /**
  * @constant polygons
@@ -59,6 +60,8 @@ export const defaultOptions = {
   leaveModeAfterCreate: false,
   strokeWidth: 2,
   undoRedo: true,
+  showUndoRedoBar: true,
+  showControlBar: true, 
   onCreateStart: () => {},
   onCreateEnd: () => {},
   onEditStart: () => {},
@@ -110,12 +113,30 @@ export default class FreeDraw extends FeatureGroup {
     this.options = { ...defaultOptions, ...options };
   }
 
+  toggleUndoRedoBar(show) {
+    if(show) {
+      var urcb = this.map.addControl(new undoRedoControl(this.options));
+    }
+    else {
+      this.map.removeControl(urcb);
+    }
+  }
+  
+    toggleControlBar(show) {
+    if(show) {
+      var cb = this.map.addControl(new customControl(this.options));
+    }
+    else {
+      this.map.removeControl(cb);
+    }
+  }
+
   /**
    * @method onAdd
    * @param {Object} map
    * @return {void}
    */
-  onAdd(map) {
+  onAdd(map) {    
     // Memorise the map instance.
     this.map = map;
 
@@ -151,7 +172,10 @@ export default class FreeDraw extends FeatureGroup {
       // Set Undo Redo Listeners
       history.attachListeners(map);
       pubSub.subscribe("Add_Undo_Redo", maintainStackStates);
-      map.addControl(new undoRedoControl(this.options));
+      if(this.options.showUndoRedoBar) {
+         //  map.addControl(new undoRedoControl(this.options));
+          this.toggleUndoRedoBar(true);
+      }
     }
 
     pubSub.subscribe('create-start', this.options.onCreateStart);
@@ -161,8 +185,10 @@ export default class FreeDraw extends FeatureGroup {
     pubSub.subscribe('remove-start', this.options.onRemoveStart);
     pubSub.subscribe('remove-end', this.options.onRemoveEnd);
 
-
-    map.addControl(new customControl(this.options));
+    if(this.options.showControlBar) {
+      //  map.addControl(new customControl(this.options));
+        this.toggleControlBar(true);
+    }
   }
 
   /**
@@ -498,6 +524,14 @@ export {
   DELETEMARKERS,
   DELETEPOINT
 } from "./helpers/Flags";
+
+export const clickUndo = (map) => {
+  undoHandler(map);
+}
+
+export const clickRedo = (map) => {
+  redoHandler(map);
+}
 
 if (typeof window !== "undefined") {
   // Attach to the `window` as `FreeDraw` if it exists, as this would prevent `new FreeDraw.default` when

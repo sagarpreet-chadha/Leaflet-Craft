@@ -11,7 +11,7 @@
   position: absolute;
   width: 50px;
   z-index: 400;
-  top: 110px;
+  /* top: 110px; */
   border-radius: 0 2px 2px 0;
   background-color: white;
   box-shadow: 0 0 1px 0 rgba(9, 30, 66, 0.5),
@@ -19,6 +19,8 @@
 }
 
 .undo-redo-buttons-container {
+  position: absolute;
+  top: 310px;
   width: 50px;
   z-index: 400;
   border-radius: 0 2px 2px 0;

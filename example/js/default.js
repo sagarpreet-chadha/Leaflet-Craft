@@ -74,6 +74,9 @@ module("leafletApp", [])
 
         // Add the tile layer and the FreeDraw layer.
         L.tileLayer(scope.TILE_URL).addTo(map);
+        L.control.zoom({
+          position: 'bottomright'
+      }).addTo(map);
         map.addLayer(freeDraw);
 
         document.addEventListener("keydown", event => {

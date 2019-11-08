@@ -7,7 +7,7 @@ import { pubSub } from './PubSub';
 export const undoRedoControl = L.Control.extend({
 
     options: {
-        position: 'bottomleft'
+        position: 'topleft'
     },
 
     addButton: function (container, map, type, toolTip='') {
