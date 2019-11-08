@@ -115,19 +115,19 @@ export default class FreeDraw extends FeatureGroup {
 
   toggleUndoRedoBar(show) {
     if(show) {
-      var urcb = this.map.addControl(new undoRedoControl(this.options));
+      this.urcb = this.map.addControl(new undoRedoControl(this.options));
     }
     else {
-      this.map.removeControl(urcb);
+      this.map.removeControl(this.urcb);
     }
   }
   
     toggleControlBar(show) {
     if(show) {
-      var cb = this.map.addControl(new customControl(this.options));
+       this.cb = this.map.addControl(new customControl(this.options));
     }
     else {
-      this.map.removeControl(cb);
+      this.map.removeControl(this.cb);
     }
   }
 
