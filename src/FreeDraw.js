@@ -231,7 +231,7 @@ export default class FreeDraw extends FeatureGroup {
    */
   remove(polygon) {
     polygon ? removeFor(this.map, polygon) : super.remove();
-    updateFor(this.map, "remove");
+    // updateFor(this.map, "remove");
   }
 
   /**
