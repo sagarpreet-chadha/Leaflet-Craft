@@ -3,9 +3,9 @@ import { polygons, modesKey, notifyDeferredKey, polygonID } from '../FreeDraw';
 import { updateFor } from './Layer';
 import { CREATE, EDIT, DELETEPOINT } from './Flags';
 import mergePolygons, { fillPolygon } from './Merge';
-import { latLngsToClipperPoints } from './Simplify';
 import { createFor, removeFor } from './Polygon';
 import { pubSub } from '../FreeDraw';
+import { latLngsToTuple } from './Utils';
 
 /**
  * @method createEdges
@@ -16,24 +16,10 @@ import { pubSub } from '../FreeDraw';
  */
 export default function createEdges(map, polygon, options) {
 
-    /**
-     * @method fetchLayerPoints
-     * @param polygon {Object}
-     * @return {Array}
-     */
-    const fetchLayerPoints = polygon => {
-
-        return polygon.getLatLngs()[0].map(latLng => {
-            return map.latLngToLayerPoint(latLng);
-        });
-
-    };
-
-    const markers = fetchLayerPoints(polygon).map(point => {
+    const markers = polygon.getLatLngs()[0].map(latLng => {
 
         const mode = map[modesKey];
         const icon = new DivIcon({ className: `leaflet-edge ${((mode & EDIT) || (mode & DELETEPOINT)) ? '' : 'disabled'}`.trim() });
-        const latLng = map.layerPointToLatLng(point);
         const marker = new Marker(latLng, { icon }).addTo(map);
 
         marker.on('contextmenu', () => {
@@ -45,11 +31,10 @@ export default function createEdges(map, polygon, options) {
                 removeFor(map, polygon);
 
                 polygon.setLatLngs(latLngArr);
-                const points = latLngsToClipperPoints(map, polygon.getLatLngs()[0]);
 
-                const newLatLngs = points.map(model => map.layerPointToLatLng(new Point(model.X, model.Y)));
+                const latLngs = polygon.getLatLngs()[0];
 
-                createFor(map, newLatLngs, options, true, polygon[polygonID], 0);
+                createFor(map, latLngsToTuple([...latLngs, latLngs[0]]), options, true, polygon[polygonID], 0);
 
             }
         });

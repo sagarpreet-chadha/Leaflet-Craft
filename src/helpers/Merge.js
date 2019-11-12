@@ -1,12 +1,14 @@
-import { Point } from 'leaflet';
-import { flatten, identical, complement, compose, head } from 'ramda';
-import { Clipper, PolyFillType } from 'clipper-lib';
-import createPolygon from 'turf-polygon';
+
+import { identical, complement } from 'ramda';
 import isIntersecting from 'turf-intersect';
 import { polygonID } from '../FreeDraw';
 import { createFor, removeFor } from './Polygon';
-import { latLngsToClipperPoints } from './Simplify';
 import { clearAllStacks } from './UndoRedo';
+import { toTurfPolygon } from './Utils';
+import TurfUnkinkPolygon from "@turf/unkink-polygon";
+import TurfClean from "@turf/clean-coords";
+import TurfUnion from "@turf/union";
+
 
 /**
  * @method fillPolygon
@@ -17,36 +19,29 @@ import { clearAllStacks } from './UndoRedo';
  */
 export function fillPolygon(map, polygon, options) {
 
-    // Simplify the polygon which prevents voids in its shape.
-    const points = latLngsToClipperPoints(map, polygon.getLatLngs()[0]);
-    Clipper.SimplifyPolygon(points, PolyFillType.pftNonZero);
+    const turfPolygon = toTurfPolygon(polygon.getLatLngs()[0]);
+    const unkinkedPolygons = TurfUnkinkPolygon(TurfClean(turfPolygon));
     const pid = polygon[polygonID];
     removeFor(map, polygon);
 
-    // Convert the Clipper points back into lat/lng pairs.
-    const latLngs = points.map(model => map.layerPointToLatLng(new Point(model.X, model.Y)));
-
-    createFor(map, latLngs, options, true, pid, 0);
-
+    unkinkedPolygons.features.map(feature => {
+        createFor(
+        map,
+        feature.geometry.coordinates[0],
+        options,
+        true,
+        pid,
+        0
+        );
+    });
 }
 
-/**
- * @method latLngsToTuple
- * @param {Array} latLngs
- * @return {Array}
- */
-function latLngsToTuple(latLngs) {
-    return latLngs.map(model => [model.lat, model.lng]);
-}
 
 function returnIntersections(map, polygons) {
-   // Transform a L.LatLng object into a GeoJSON polygon that TurfJS expects to receive.
-    const toTurfPolygon = compose(createPolygon, x => [x], x => [...x, head(x)], latLngsToTuple);
 
     const analysis = polygons.reduce((accum, polygon) => {
 
         const latLngs = polygon.getLatLngs()[0];
-        const points = latLngsToClipperPoints(map, polygon.getLatLngs()[0]);
         const turfPolygon = toTurfPolygon(latLngs);
 
         // Determine if the current polygon intersects any of the other polygons currently on the map.
@@ -58,7 +53,7 @@ function returnIntersections(map, polygons) {
 
         return {
             ...accum,
-            [key]: [...accum[key], intersects ? points : latLngs],
+            [key]: [...accum[key], latLngs],
             intersectingPolygons: intersects ? [...accum.intersectingPolygons, polygon] : accum.intersectingPolygons
         };
 
@@ -84,23 +79,17 @@ export function isIntersectingPolygon(map, polygons) {
 export default (map, polygons, options) => {
 
     const analysis = returnIntersections(map, polygons);
-    // Merge all of the polygons.
-    const mergePolygons = Clipper.SimplifyPolygons(analysis.intersecting, PolyFillType.pftNonZero);
 
-    // Not handling Self-Intersecting case .
-    const updateStackState = !(mergePolygons.length > 1);
-    // Also if Self-intersecting case found, clear all Stacks and Undo-Redo feature will not work until we have removed all Self-intersections.
-    !updateStackState && clearAllStacks();
+    // Merge all of the polygons.
+    const intersectingTurfPolygons = analysis.intersecting.map(latLngs =>
+        toTurfPolygon(latLngs)
+    );
 
     // Remove all of the existing polygons that are intersecting another polygon.
     analysis.intersectingPolygons.forEach(polygon => removeFor(map, polygon));
 
-    return flatten(mergePolygons.map(polygon => {
-
-        // Determine if it's an intersecting polygon or not.
-        const latLngs = polygon.map(model => {
-            return map.layerPointToLatLng(new Point(model.X, model.Y));
-        });
+    if(intersectingTurfPolygons.length) {
+        const mergePolygons = TurfUnion(...intersectingTurfPolygons);
 
         // Create the polygon, but this time prevent any merging, otherwise we'll find ourselves
         // in an infinite loop.
@@ -109,8 +98,21 @@ export default (map, polygons, options) => {
             polygon[polygonID] !== options.currentOverlappingPolygon[polygonID]
         ));
 
-        return createFor(map, latLngs, options, true, 0, 2, updateStackState); // pid = 0 bcoz to create new Polygon
+        const isMultiPolygon = mergePolygons.geometry.type === "MultiPolygon";
+        const coordinates = mergePolygons.geometry.coordinates;
 
-    }));
+        // Not handling Self-Intersecting case .
+        const updateStackState = !isMultiPolygon;
+        // Also if Self-intersecting case found, clear all Stacks and Undo-Redo feature will not work until we have removed all Self-intersections.
+        !updateStackState && clearAllStacks();
 
+        const polygonsToCreate = isMultiPolygon
+            ? coordinates.map(coords => {
+                createFor(map, coords[0], options, true,  0, 2, updateStackState); // pid = 0 bcoz to create new Polygon
+                })
+            : createFor(map, coordinates[0], options, true,  0, 2, updateStackState); // pid = 0 bcoz to create new Polygon
+        return polygonsToCreate;
+    }
+
+    return [];
 };

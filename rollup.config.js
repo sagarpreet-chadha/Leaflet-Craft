@@ -12,7 +12,7 @@ module.exports = {
       format: "cjs",
       exports: "named",
       sourcemap: true,
-      external: ["ramda", "leaflet", "clipper-lib"]
+      external: ["ramda", "leaflet"]
     },
     {
       file: "dist/leaflet-freedraw.esm.js",
@@ -51,7 +51,6 @@ module.exports = {
           "LineUtil",
           "FeatureGroup"
         ],
-        "node_modules/clipper-lib/clipper.js": ["Clipper", "PolyFillType"],
         "node_modules/ramda/dist/ramda.js": [
           "flatten",
           "compose",

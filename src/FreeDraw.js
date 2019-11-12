@@ -13,6 +13,7 @@ import * as turf from "@turf/helpers";
 import pointsWithinPolygon from "@turf/points-within-polygon";
 import { updateFor } from "./helpers/Layer";
 import { createFor, removeFor, clearFor } from "./helpers/Polygon";
+import { latLngsToTuple } from "./helpers/Utils";
 import {
   CREATE,
   EDIT,
@@ -27,7 +28,6 @@ import {
 } from "./helpers/Flags";
 import simplifyPolygon from "./helpers/Simplify";
 import UndoRedo from "./helpers/UndoRedo";
-import { latLngsToClipperPoints } from "./helpers/Simplify";
 import PubSub from "./helpers/PubSub";
 import {
   maintainStackStates,
@@ -235,8 +235,7 @@ export default class FreeDraw extends FeatureGroup {
    * @return {Object}
    */
   create(latLngs, options = { concavePolygon: false }) {
-   
-    const created = createFor(this.map, latLngs, {
+    const created = createFor(this.map, latLngsToTuple(latLngs), {
       ...this.options,
       ...options
     });
@@ -440,7 +439,7 @@ export default class FreeDraw extends FeatureGroup {
         if (create) {
           // ...And finally if we have any lat/lngs in our set then we can attempt to
           // create the polygon.
-          latLngs.size && createFor(map, Array.from(latLngs), options);
+          (latLngs.size >= 3) && createFor(map, latLngsToTuple(Array.from(latLngs)), options);
 
           // Finally invoke the callback for the polygon regions.
           updateFor(map, "create");
@@ -478,7 +477,7 @@ export default class FreeDraw extends FeatureGroup {
     const allPolygons = this.all();
 
     Array.from(allPolygons).map(p => {
-      const latLngArr = p[rawLatLngKey].map(model => [model.lat, model.lng]);
+      const latLngArr = p[rawLatLngKey].map(model => [model[0], model[1]]);
       const turfPoints = turf.points(latLngArr);
 
       const containedMarkers = pointsWithinPolygon(turfPoints, turfPolygon);
@@ -495,13 +494,10 @@ export default class FreeDraw extends FeatureGroup {
         removeFor(this.map, p);
         if (newlatLngArr.length > 2) {
           p.setLatLngs(newlatLngArr);
-          const points = latLngsToClipperPoints(this.map, p.getLatLngs()[0]);
 
-          const newLatLngs = points.map(model =>
-            this.map.layerPointToLatLng(new Point(model.X, model.Y))
-          );
+          const latLngs =  p.getLatLngs()[0];
 
-          createFor(this.map, newLatLngs, this.options, true, p[polygonID], 0);
+          createFor(this.map,  latLngsToTuple([...latLngs, latLngs[0]]), this.options, true, p[polygonID], 0);
         } else {
           undoMainStack.push(p[polygonID]);
           undoStackObject[p[polygonID]].push(null);
