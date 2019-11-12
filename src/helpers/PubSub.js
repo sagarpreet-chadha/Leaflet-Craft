@@ -1,5 +1,5 @@
 const PubSub = () => {
-  const state = {};
+  let state = {};
 
   const publish = async (evtName, data) => {
     console.log('published: ', evtName, data);
