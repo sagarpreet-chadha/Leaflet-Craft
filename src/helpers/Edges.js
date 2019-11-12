@@ -5,7 +5,7 @@ import { CREATE, EDIT, DELETEPOINT } from './Flags';
 import mergePolygons, { fillPolygon } from './Merge';
 import { latLngsToClipperPoints } from './Simplify';
 import { createFor, removeFor } from './Polygon';
-import { pubSub } from './PubSub';
+import { pubSub } from '../FreeDraw';
 
 /**
  * @method createEdges

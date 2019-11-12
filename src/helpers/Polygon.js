@@ -9,7 +9,7 @@ import { DELETE, APPEND } from './Flags';
 import handlePolygonClick from './Polygon';
 import concavePolygon from './Concave';
 import mergePolygons, { isIntersectingPolygon } from './Merge';
-import { pubSub } from './PubSub';
+import { pubSub } from '../FreeDraw';
 
 /**
  * @method appendEdgeFor

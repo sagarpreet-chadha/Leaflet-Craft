@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { stopPropagation } from './ToolbarHelper';
 import { undoHandler, redoHandler } from './Handlers';
 import { undoMainStack, redoMainStack } from './UndoRedo';
-import { pubSub } from './PubSub';
+import { pubSub } from '../Freedraw';
 
 export const undoRedoControl = L.Control.extend({
 

@@ -28,21 +28,28 @@ import {
 import simplifyPolygon from "./helpers/Simplify";
 import UndoRedo from "./helpers/UndoRedo";
 import { latLngsToClipperPoints } from "./helpers/Simplify";
-import { pubSub } from "./helpers/PubSub";
+import PubSub from "./helpers/PubSub";
 import {
   maintainStackStates,
   undoMainStack,
-  undoStackObject
+  undoStackObject,
+  redoMainStack,
+  redoStackObject,
+  mergedPolygonsMap
 } from "./helpers/UndoRedo";
 import { customControl } from "./helpers/toolbar";
 import { undoRedoControl } from "./helpers/UndoRedoToolbar";
 import {undoHandler, redoHandler} from "./helpers/Handlers";
+
 
 /**
  * @constant polygons
  * @type {WeakMap}
  */
 export const polygons = new WeakMap();
+
+const {publish, subscribe, clear} = PubSub();
+export const pubSub = {publish, subscribe};
 
 /**
  * @constant defaultOptions
@@ -115,19 +122,21 @@ export default class FreeDraw extends FeatureGroup {
 
   toggleUndoRedoBar(show) {
     if(show) {
-      this.urcb = this.map.addControl(new undoRedoControl(this.options));
+      this.undoRedoBar = new undoRedoControl(this.options);
+      this.map.addControl(this.undoRedoBar);
     }
     else {
-      this.map.removeControl(this.urcb);
+      this.map.removeControl(this.undoRedoBar);
     }
   }
   
-    toggleControlBar(show) {
+  toggleControlBar(show) {
     if(show) {
-       this.cb = this.map.addControl(new customControl(this.options));
+      this.controlBar = new customControl(this.options);
+      this.map.addControl(this.controlBar);
     }
     else {
-      this.map.removeControl(this.cb);
+      this.map.removeControl(this.controlBar);
     }
   }
 
@@ -207,6 +216,10 @@ export default class FreeDraw extends FeatureGroup {
     delete map[cancelKey];
     delete map[instanceKey];
     delete map.simplifyPolygon;
+
+    // clear events
+    clear();
+
   }
 
   /**
@@ -216,10 +229,12 @@ export default class FreeDraw extends FeatureGroup {
    * @return {Object}
    */
   create(latLngs, options = { concavePolygon: false }) {
+   
     const created = createFor(this.map, latLngs, {
       ...this.options,
       ...options
     });
+    pubSub.publish("create-end");
     updateFor(this.map, "create");
     return created;
   }
@@ -241,6 +256,11 @@ export default class FreeDraw extends FeatureGroup {
   clear() {
     clearFor(this.map);
     updateFor(this.map, "clear");
+    undoMainStack.clear();
+    redoMainStack.clear();
+    undoStackObject.clear();
+    redoStackObject.clear();
+    mergedPolygonsMap.clear();
   }
 
   /**
@@ -252,6 +272,16 @@ export default class FreeDraw extends FeatureGroup {
     // Set mode when passed `mode` is numeric, and then yield the current mode.
     typeof mode === "number" && modeFor(this.map, mode, this.options);
     return this.map[modesKey];
+  }
+
+  toggleMode(mode = null) {
+    // Set mode when passed `mode` is numeric, and then yield the current mode.
+    
+    // Update the mode.
+    this.map[modesKey] = mode;
+
+    // Fire the updated mode.
+    this.map[instanceKey].fire('mode', { mode });
   }
 
   /**

@@ -1,5 +1,5 @@
 import Stack from './Stack';
-import { pubSub } from './PubSub';
+import { pubSub } from '../Freedraw';
 import { mergedPolygonCreatedHandler, mergePolygonUndoHandler, mergePolygonRedoHandler, newPolygonCreatedHandler, existingPolygonEditedHandler, undoHandler, redoHandler } from './Handlers';
 
 // Undo MAIN Stack that stores the sequence in which Polygons are added/edited.

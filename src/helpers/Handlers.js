@@ -2,7 +2,7 @@ import { rawLatLngKey, polygonID, polygons } from '../FreeDraw';
 import { removeFor, createFor } from './Polygon';
 import Stack from './Stack';
 import { undoMainStack, undoStackObject, redoMainStack, redoStackObject, mergedPolygonsMap } from './UndoRedo';
-import { pubSub } from './PubSub';
+import { pubSub } from '../FreeDraw';
 
 // The current Polygon is merged Polygon .
 // Add the merged polygon in Undo Stack which is mapped to [intersectingPolygons - current Polygon]

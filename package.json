@@ -1,6 +1,6 @@
 {
   "name": "leaflet-craft",
-  "version": "1.0.5",
+  "version": "1.0.12",
   "description": "Zoopla inspired freehand polygon creation using Leaflet.js.",
   "source": "src/FreeDraw.js",
   "main": "dist/leaflet-freedraw.cjs.js",
@@ -18,7 +18,8 @@
     "test": "npm run lint && npm run spec",
     "spec": "ava && npm run example && mocha tests/functional/FreeDraw.test.js --compilers js:@babel/register",
     "lint": "xo src/*.js src/**/*.js",
-    "cleanup": "rimraf node_modules"
+    "cleanup": "rimraf node_modules",
+    "prepublish": "yarn build"
   },
   "repository": {
     "type": "git",

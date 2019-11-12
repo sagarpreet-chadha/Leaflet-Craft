@@ -2,7 +2,8 @@ const PubSub = () => {
   const state = {};
 
   const publish = async (evtName, data) => {
-    const promises = state[evtName].map(cb => {
+    console.log('published: ', evtName, data);
+    const promises = (state[evtName] || []).map(cb => {
       return Promise.resolve(cb(data));
     });
     try {
@@ -24,8 +25,9 @@ const PubSub = () => {
 
   return {
     publish,
-    subscribe
+    subscribe,
+    clear: () => {state = {}}
   };
 };
 
-export const pubSub = PubSub();
+export default PubSub;

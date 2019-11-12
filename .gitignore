@@ -19,3 +19,4 @@ yarn.lock
 
 .cache/
 example-dist/
+dist/
