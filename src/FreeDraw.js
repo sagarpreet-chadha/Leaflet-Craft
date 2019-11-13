@@ -217,6 +217,12 @@ export default class FreeDraw extends FeatureGroup {
     delete map[instanceKey];
     delete map.simplifyPolygon;
 
+
+    undoMainStack.clear();
+    redoMainStack.clear();
+    undoStackObject.clear();
+    redoStackObject.clear();
+    mergedPolygonsMap.clear();
     // clear events
     clear();
 
