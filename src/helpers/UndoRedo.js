@@ -34,14 +34,20 @@ export function maintainStackStates(data) {
     switch (data.from) {
         case 2 : {
             pubSub.publish('POLYGON_OVERLAPS_OTHER_POLYGON', data);
+            console.log("UNDO Stack : " + undoMainStack.show());
+            console.log("REDO Stack : " + redoMainStack.show());
             return;
         }
         case 3: {
             pubSub.publish('UNDO_MERGED_POLYGON', data);
+            console.log("UNDO Stack : " + undoMainStack.show());
+            console.log("REDO Stack : " + redoMainStack.show());
             return;
         }
         case 4: {
             pubSub.publish('REDO_MERGED_POLYGON', data);
+            console.log("UNDO Stack : " + undoMainStack.show());
+            console.log("REDO Stack : " + redoMainStack.show());
             return;
         }
         default: {
@@ -50,11 +56,12 @@ export function maintainStackStates(data) {
             } else {
                 pubSub.publish('SIMPLE_POLYGON_CREATED', data);
             }
+            console.log("UNDO Stack : " + undoMainStack.show());
+            console.log("REDO Stack : " + redoMainStack.show());
             return;
         }
     }
-    // console.log("UNDO Stack : " + undoMainStack.show());
-    // console.log("REDO Stack : " + redoMainStack.show());
+   
 }
 
 export function clearAllStacks() {
@@ -65,20 +72,25 @@ export function clearAllStacks() {
 
 }
 
-export default function UndoRedo() {
+export default function UndoRedo(map) {
+
+    const undoRedoEvent = e => {
+        // UNDO listener
+            if (e.key === 'z' && e.metaKey && !e.shiftKey) {
+                undoHandler(map);
+            }
+        // REDO listener
+            if (e.key === 'z' && e.metaKey && e.shiftKey) {
+                redoHandler(map);
+            }
+        }
 
     return {
-        attachListeners(map) {
-            document.addEventListener('keydown', e => {
-            // UNDO listener
-                if (e.key === 'z' && e.metaKey && !e.shiftKey) {
-                    undoHandler(map);
-                }
-            // REDO listener
-                if (e.key === 'z' && e.metaKey && e.shiftKey) {
-                    redoHandler(map);
-                }
-            });
+        attachListeners() {
+            document.addEventListener('keydown', undoRedoEvent);
+        },
+        removeListeners() {
+            document.removeEventListener('keydown', undoRedoEvent);
         }
     };
 }

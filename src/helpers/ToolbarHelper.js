@@ -28,6 +28,7 @@ export const toggleMode = (mode, map = false, options) => {
         return;
 
     }
+    
 
     // Otherwise disable it.
     ScopeMode ^= mode;

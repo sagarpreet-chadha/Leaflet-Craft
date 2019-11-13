@@ -177,9 +177,9 @@ export default class FreeDraw extends FeatureGroup {
     this.listenForEvents(map, svg, this.options);
 
     if (this.options.undoRedo) {
-      const history = UndoRedo();
+       this.history = UndoRedo(map);
       // Set Undo Redo Listeners
-      history.attachListeners(map);
+      this.history.attachListeners();
       pubSub.subscribe("Add_Undo_Redo", maintainStackStates);
       if(this.options.showUndoRedoBar) {
          //  map.addControl(new undoRedoControl(this.options));
@@ -217,7 +217,7 @@ export default class FreeDraw extends FeatureGroup {
     delete map[instanceKey];
     delete map.simplifyPolygon;
 
-
+    this.history.removeListeners();
     undoMainStack.clear();
     redoMainStack.clear();
     undoStackObject.clear();
@@ -327,7 +327,7 @@ export default class FreeDraw extends FeatureGroup {
      * @param {Object} event
      * @return {void}
      */
-    const mouseDown = async event => {
+    const mouseDown = event => {
       if (map[modesKey] & DELETEMARKERS) {
         const latLngs = new Set();
         const lineIterator = this.createPath(
@@ -379,11 +379,6 @@ export default class FreeDraw extends FeatureGroup {
       if (!(map[modesKey] & CREATE)) {
         // Polygons can only be created when the mode includes create.
         return;
-      } else {
-        const response = await pubSub.publish("create-start");
-        if (response && response.interrupt) {
-          return;
-        }
       }
 
       /**
@@ -424,7 +419,7 @@ export default class FreeDraw extends FeatureGroup {
        * @param {Boolean} [create = true]
        * @return {Function}
        */
-      const mouseUp = (_, create = true) => {
+      const mouseUp = async (_, create = true) => {
         // Remove the ability to invoke `cancel`.
         map[cancelKey] = () => {};
 
@@ -440,14 +435,21 @@ export default class FreeDraw extends FeatureGroup {
         if (create) {
           // ...And finally if we have any lat/lngs in our set then we can attempt to
           // create the polygon.
-          latLngs.size && createFor(map, Array.from(latLngs), options);
+          if(latLngs.size >= 3) {
+            const response = await pubSub.publish("create-start");
+            if (response && response.interrupt) {
+              return;
+            }
+            
+            createFor(map, Array.from(latLngs), options);
 
-          // Finally invoke the callback for the polygon regions.
-          updateFor(map, "create");
-          pubSub.publish("create-end");
-
-          // Exit the `CREATE` mode if the options permit it.
-          options.leaveModeAfterCreate && this.mode(this.mode() ^ CREATE);
+            // Finally invoke the callback for the polygon regions.
+            updateFor(map, "create");
+            pubSub.publish("create-end");
+            
+            // Exit the `CREATE` mode if the options permit it.
+            options.leaveModeAfterCreate && this.mode(this.mode() ^ CREATE);
+          }
         }
       };
 
