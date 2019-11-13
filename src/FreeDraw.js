@@ -251,6 +251,8 @@ export default class FreeDraw extends FeatureGroup {
    * @return {void}
    */
   remove(polygon) {
+    // remove from UndoStack
+    undoMainStack.pop();
     polygon ? removeFor(this.map, polygon) : super.remove();
     // updateFor(this.map, "remove");
   }
