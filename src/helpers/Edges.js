@@ -41,6 +41,7 @@ export default function createEdges(map, polygon, options) {
             if (map[modesKey] & DELETEPOINT) {
 
                 const deleteMarker = () => {
+                    marker.closePopup();
 
                     const newMarkers = markers.filter(m => (m !== marker));
                     const latLngArr = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
@@ -60,7 +61,11 @@ export default function createEdges(map, polygon, options) {
                     marker.closePopup();
                 }
 
-                marker.bindPopup("<b>Delete marker?</b><br><br> &nbsp; <button id='popupButton'> Yes </button> &nbsp; <button id='cancelPopupButton'> No </button>").openPopup();
+                const contentPopup = L.popup()
+                .setContent("<b>Delete marker?</b><br><br> &nbsp; <button id='popupButton'> Yes </button> &nbsp; <button id='cancelPopupButton'> No </button>")
+
+
+                marker.bindPopup(contentPopup).openPopup();
                 
                 document.getElementById("popupButton").addEventListener("click", deleteMarker);
                 document.getElementById("popupButton").style.fontSize = 10;

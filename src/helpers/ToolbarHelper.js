@@ -1,4 +1,5 @@
-import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND, modesKey } from './Flags';
+import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND } from './Flags';
+import {modesKey} from '../FreeDraw'
 import { modeFor } from './Flags';
 
 const SCOPE_MODES = { CREATE, EDIT, DELETE, APPEND, NONE, DELETEMARKERS, DELETEPOINT };
