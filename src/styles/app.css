@@ -8,6 +8,7 @@
 }
 
 .edit-mode-buttons-container {
+  top: 110px;
   position: absolute;
   width: 50px;
   z-index: 400;
@@ -20,7 +21,6 @@
 
 .undo-redo-buttons-container {
   position: absolute;
-  top: 310px;
   width: 50px;
   z-index: 400;
   border-radius: 0 2px 2px 0;

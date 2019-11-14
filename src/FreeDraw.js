@@ -511,6 +511,7 @@ export default class FreeDraw extends FeatureGroup {
           undoStackObject[p[polygonID]].push(null);
         }
       }
+      pubSub.publish('edit-end');
       return p;
     });
   }

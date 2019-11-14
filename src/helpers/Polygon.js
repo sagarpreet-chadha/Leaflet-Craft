@@ -54,6 +54,7 @@ const appendEdgeFor = (map, polygon, options, { parts, newPoint, startPoint, end
     polygon[edgesKey].map(edge => map.removeLayer(edge));
     polygon[edgesKey] = createEdges(map, polygon, options);
 
+    pubSub.publish('edit-end');
 };
 
 const latLngsToTuple = latLngs => {
@@ -145,7 +146,6 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
     }
 
     return addedPolygons;
-
 };
 
 /**
