@@ -137,5 +137,5 @@ export const redoHandler = map => {
         redoPoppedEl && createFor(map, redoPoppedEl[rawLatLngKey], redoPoppedEl._options, true, id, 0);
     }
     pubSub.publish('STACK_STATE_UPDATED', { map, undoMainStack, redoMainStack });
-    pubSub.publish('edit-end');
+    pubSub.publish('edit-end'); 
 };
