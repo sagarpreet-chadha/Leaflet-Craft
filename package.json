@@ -44,9 +44,12 @@
   "homepage": "https://github.com/sagarpreet-chadha/Leaflet-Craft",
   "dependencies": {
     "@turf/area": "6.0.1",
+    "@turf/clean-coords": "^6.0.1",
     "@turf/helpers": "6.1.4",
     "@turf/points-within-polygon": "5.1.5",
-    "clipper-lib": "~6.2.1",
+    "@turf/union": "^5.1.5",
+    "@turf/unkink-polygon": "^5.1.5",
+    "clipper-lib": "^6.4.2",
     "regenerator-runtime": "^0.13.2",
     "turf-intersect": "~3.0.12",
     "turf-polygon": "~1.0.3"

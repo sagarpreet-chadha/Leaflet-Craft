@@ -1,7 +1,5 @@
 import { LineUtil, Point, Polygon, DomEvent } from 'leaflet';
 import turfArea from '@turf/area';
-import createPolygon from 'turf-polygon';
-import { compose, head } from 'ramda';
 import { defaultOptions, edgesKey, modesKey, polygons, rawLatLngKey, polygonID, polygonArea } from '../FreeDraw';
 import { updateFor } from './Layer';
 import createEdges from './Edges';
@@ -10,6 +8,7 @@ import handlePolygonClick from './Polygon';
 import concavePolygon from './Concave';
 import mergePolygons, { isIntersectingPolygon } from './Merge';
 import { pubSub } from '../FreeDraw';
+import { toTurfPolygon } from './Utils';
 
 /**
  * @method appendEdgeFor
@@ -57,10 +56,6 @@ const appendEdgeFor = (map, polygon, options, { parts, newPoint, startPoint, end
     pubSub.publish('edit-end');
 };
 
-const latLngsToTuple = latLngs => {
-    return latLngs.map(model => [model.lat, model.lng]);
-};
-
 /**
  * @method createFor
  * @param {Object} map
@@ -85,10 +80,8 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
     // Apply the concave hull algorithm to the created polygon if the options allow.
     const concavedLatLngs = !preventMutations && options.concavePolygon ? concavePolygon(map, latLngs) : latLngs;
 
-    const toTurfPolygon = compose(createPolygon, x => [x], x => [...x, head(x)], latLngsToTuple);
-
     // Simplify the polygon before adding it to the map.
-    const addedPolygons = limitReached ? [] : map.simplifyPolygon(map, concavedLatLngs, options).map(latLngs => {
+    const addedPolygons = limitReached ? [] : map.simplifyPolygon(concavedLatLngs).map(latLngs => {
 
         const polygon = new Polygon(latLngs, {
             ...defaultOptions, ...options, className: 'leaflet-polygon'
