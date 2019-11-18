@@ -44,7 +44,6 @@
   "homepage": "https://github.com/sagarpreet-chadha/Leaflet-Craft",
   "dependencies": {
     "@turf/area": "6.0.1",
-    "@turf/clean-coords": "^6.0.1",
     "@turf/helpers": "6.1.4",
     "@turf/points-within-polygon": "5.1.5",
     "regenerator-runtime": "^0.13.2",
