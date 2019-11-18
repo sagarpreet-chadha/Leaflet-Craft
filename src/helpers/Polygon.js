@@ -8,7 +8,7 @@ import handlePolygonClick from './Polygon';
 import concavePolygon from './Concave';
 import mergePolygons, { isIntersectingPolygon } from './Merge';
 import { pubSub } from '../FreeDraw';
-import { toTurfPolygon } from './Utils';
+import {polygon as TurfPolygon} from '@turf/helpers'
 
 /**
  * @method appendEdgeFor
@@ -87,7 +87,7 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
             ...defaultOptions, ...options, className: 'leaflet-polygon'
         }).addTo(map);
 
-        const turfPolygon = toTurfPolygon(Array.from(latLngs));
+        const turfPolygon = TurfPolygon([latLngs]);
         const areaPolygon = turfArea(turfPolygon);
 
         polygon[polygonArea] = areaPolygon;  // area in meter square
