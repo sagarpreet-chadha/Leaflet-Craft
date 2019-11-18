@@ -34,20 +34,14 @@ export function maintainStackStates(data) {
     switch (data.from) {
         case 2 : {
             pubSub.publish('POLYGON_OVERLAPS_OTHER_POLYGON', data);
-            console.log("UNDO Stack : " + undoMainStack.show());
-            console.log("REDO Stack : " + redoMainStack.show());
             return;
         }
         case 3: {
             pubSub.publish('UNDO_MERGED_POLYGON', data);
-            console.log("UNDO Stack : " + undoMainStack.show());
-            console.log("REDO Stack : " + redoMainStack.show());
             return;
         }
         case 4: {
             pubSub.publish('REDO_MERGED_POLYGON', data);
-            console.log("UNDO Stack : " + undoMainStack.show());
-            console.log("REDO Stack : " + redoMainStack.show());
             return;
         }
         default: {
@@ -56,11 +50,11 @@ export function maintainStackStates(data) {
             } else {
                 pubSub.publish('SIMPLE_POLYGON_CREATED', data);
             }
-            console.log("UNDO Stack : " + undoMainStack.show());
-            console.log("REDO Stack : " + redoMainStack.show());
             return;
         }
     }
+    // console.log("UNDO Stack : " + undoMainStack.show());
+    // console.log("REDO Stack : " + redoMainStack.show());
    
 }
 
