@@ -1,4 +1,5 @@
-import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND, modesKey } from '../FreeDraw';
+import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND } from './Flags';
+import {modesKey} from '../FreeDraw'
 import { modeFor } from './Flags';
 
 const SCOPE_MODES = { CREATE, EDIT, DELETE, APPEND, NONE, DELETEMARKERS, DELETEPOINT };
@@ -16,6 +17,12 @@ export const toggleMode = (mode, map = false, options) => {
         ScopeMode &= 47;
     }
 
+    if(mode === NONE) {
+        ScopeMode = 0;
+        modeFor(map, ScopeMode, options);
+        return;
+    }
+
     if (isDisabled(mode, ScopeMode)) {
 
         // Enabled the mode.
@@ -28,7 +35,7 @@ export const toggleMode = (mode, map = false, options) => {
         return;
 
     }
-
+    
     // Otherwise disable it.
     ScopeMode ^= mode;
     modeFor(map, ScopeMode, options);

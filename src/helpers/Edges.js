@@ -25,17 +25,61 @@ export default function createEdges(map, polygon, options) {
         marker.on('contextmenu', () => {
 
             if (map[modesKey] & DELETEPOINT) {
-                const newMarkers = markers.filter(m => (m !== marker));
-                const latLngArr = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
 
-                removeFor(map, polygon);
+                const deleteMarker = () => {
 
-                polygon.setLatLngs(latLngArr);
+                    const newMarkers = markers.filter(m => (m !== marker));
+                    const latLngArr = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
 
-                const latLngs = polygon.getLatLngs()[0];
+                    removeFor(map, polygon);
 
-                createFor(map, latLngsToTuple([...latLngs, latLngs[0]]), options, true, polygon[polygonID], 0);
+                   polygon.setLatLngs(latLngArr);
 
+                   const latLngs = polygon.getLatLngs()[0];
+
+                   createFor(map, latLngsToTuple([...latLngs, latLngs[0]]), options, true, polygon[polygonID], 0);
+
+                    
+                    pubSub.publish('edit-end');
+
+                    document.getElementById("popupButton").removeEventListener("click", deleteMarker);
+                    document.getElementById("cancelPopupButton").removeEventListener("click", closeMarkerPopup);
+
+                    map.closePopup();
+                }
+
+                const closeMarkerPopup = () => {
+
+                    document.getElementById("popupButton").removeEventListener("click", deleteMarker);
+                    document.getElementById("cancelPopupButton").removeEventListener("click", closeMarkerPopup);
+                    map.closePopup();
+                }
+
+                const contentPopup = L.popup()
+                .setContent("<b>Delete marker?</b><br><br> &nbsp; <button id='popupButton'> Yes </button> &nbsp; <button id='cancelPopupButton'> No </button>")
+
+
+                marker.bindPopup(contentPopup).openPopup();
+                
+                document.getElementById("popupButton").addEventListener("click", deleteMarker);
+                document.getElementById("popupButton").style.fontSize = 10;
+                document.getElementById("popupButton").style.fontWeight = 500;
+                document.getElementById("popupButton").style.borderRadius = 3;
+                document.getElementById("popupButton").style.borderColor = '#0065ff';
+                document.getElementById("popupButton").style.color = '#0065ff';
+                document.getElementById("popupButton").style.border = 1;
+                document.getElementById("popupButton").style.padding = '3px';
+                document.getElementById("popupButton").style.cursor = 'pointer';
+                
+                document.getElementById("cancelPopupButton").addEventListener("click", closeMarkerPopup);
+                document.getElementById("cancelPopupButton").style.fontSize = 10;
+                document.getElementById("cancelPopupButton").style.fontWeight = 500;
+                document.getElementById("cancelPopupButton").style.borderRadius = 3;
+                document.getElementById("cancelPopupButton").style.borderColor = 'red';
+                document.getElementById("cancelPopupButton").style.color = 'red';
+                document.getElementById("cancelPopupButton").style.border = 1;
+                document.getElementById("cancelPopupButton").style.padding = '3px';
+                document.getElementById("cancelPopupButton").style.cursor = 'pointer';
             }
         });
 

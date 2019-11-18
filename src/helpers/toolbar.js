@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND } from '../FreeDraw';
+import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND } from '../FreeDraw';
 import { toggleMode } from './ToolbarHelper';
 
 export const customControl = L.Control.extend({
@@ -30,6 +30,19 @@ export const customControl = L.Control.extend({
         }
 
         child.onclick = function() {
+
+            if(mode === NONE) {
+                 // disable all other buttons
+                 container.childNodes.forEach(element => {
+                    element.firstChild.style.opacity = 0.3;
+                    element.firstChild.style.color = 'darkslategray';
+                });
+                icon.style.opacity = 1;
+                icon.style.color = 'black';
+                toggleMode(mode, map, mapOptions);
+                return;
+            }
+
             // toggle logic
             if (icon.style.opacity == 0.3) {
                 if (mode === DELETEMARKERS) {
@@ -39,8 +52,8 @@ export const customControl = L.Control.extend({
                         element.firstChild.style.color = 'darkslategray';
                     });
                 } else {
-                    container.childNodes[5].firstChild.style.opacity = 0.3;
-                    container.childNodes[5].firstChild.style.color = 'darkslategray';
+                    container.childNodes[3].firstChild.style.opacity = 0.3;
+                    container.childNodes[3].firstChild.style.color = 'darkslategray';
                 }
                 icon.style.opacity = 1;
                 icon.style.color = 'black';
@@ -48,7 +61,10 @@ export const customControl = L.Control.extend({
                 icon.style.opacity = 0.3;
                 icon.style.color = 'darkslategray';
             }
+            
             toggleMode(mode, map, mapOptions);
+            container.childNodes[4].firstChild.style.opacity = 1;
+            container.childNodes[4].firstChild.style.color = 'black';
         };
     },
 
@@ -57,12 +73,13 @@ export const customControl = L.Control.extend({
         const container = L.DomUtil.create('div', 'edit-mode-buttons-container');
         L.DomEvent.disableClickPropagation(container);
 
-        this.addButton(container, CREATE, map, this.mapOptions, 'create', 'Create Polygon');
-        this.addButton(container, EDIT, map, this.mapOptions, 'gesture', 'Edit Polygon');
+        this.addButton(container, CREATE | EDIT | APPEND, map, this.mapOptions, 'create', 'Add Polygon');
+        // this.addButton(container, EDIT, map, this.mapOptions, 'gesture', 'Edit Polygon');
         this.addButton(container, DELETE, map, this.mapOptions, 'delete_forever', 'Delete Polygon');
-        this.addButton(container, APPEND, map, this.mapOptions, 'add', 'Add Marker');
-        this.addButton(container, DELETEPOINT, map, this.mapOptions, 'remove', 'Delete Marke');
+        // this.addButton(container, APPEND, map, this.mapOptions, 'add', 'Add Marker');
+        this.addButton(container, DELETEPOINT, map, this.mapOptions, 'remove', 'Delete Marker');
         this.addButton(container, DELETEMARKERS, map, this.mapOptions, 'delete_sweep', 'Delete Multiple Markers');
+        this.addButton(container, NONE, map, this.mapOptions, 'pan_tool', 'Disable all');
 
         return container;
     }

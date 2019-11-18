@@ -53,6 +53,7 @@ const appendEdgeFor = (map, polygon, options, { parts, newPoint, startPoint, end
     polygon[edgesKey].map(edge => map.removeLayer(edge));
     polygon[edgesKey] = createEdges(map, polygon, options);
 
+    pubSub.publish('edit-end');
 };
 
 /**
@@ -66,7 +67,7 @@ const appendEdgeFor = (map, polygon, options, { parts, newPoint, startPoint, end
 export const createFor = (map, latLngs, options = defaultOptions, preventMutations = false, pid = 0, from = 1, updateStackState = true) => {
     // when new Polygon is created, then pid = 0.
     if (!pid) {
-        if (createFor.count === undefined) {
+        if (createFor.count === undefined || createFor.count >= 100) {
             createFor.count = 1;
         } else {
             createFor.count ++;
@@ -138,7 +139,6 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
     }
 
     return addedPolygons;
-
 };
 
 /**
