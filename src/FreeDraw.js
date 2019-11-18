@@ -241,7 +241,7 @@ export default class FreeDraw extends FeatureGroup {
       ...options
     });
     pubSub.publish("create-end");
-    updateFor(this.map, "create");
+    // updateFor(this.map, "create");
     return created;
   }
 

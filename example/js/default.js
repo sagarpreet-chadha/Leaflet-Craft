@@ -63,7 +63,7 @@ module("leafletApp", [])
        */
       link(scope, element) {
         // Instantiate L.Map and the FreeDraw layer, passing in the default mode.
-        const map = new L.Map(element[0], { doubleClickZoom: false }).setView(
+        const map = new L.Map(element[0], { doubleClickZoom: false, zoomControl: false }).setView(
           [23, 80],
           6
         );
@@ -74,9 +74,7 @@ module("leafletApp", [])
 
         // Add the tile layer and the FreeDraw layer.
         L.tileLayer(scope.TILE_URL).addTo(map);
-        L.control.zoom({
-          position: 'bottomright'
-      }).addTo(map);
+      
         map.addLayer(freeDraw);
 
         document.addEventListener("keydown", event => {

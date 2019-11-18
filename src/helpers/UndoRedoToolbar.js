@@ -18,8 +18,8 @@ export const undoRedoControl = L.Control.extend({
 
         const icon = L.DomUtil.create('i', 'material-icons', child);
         icon.innerHTML = type;
-        icon.style.opacity = 0.3;
-        icon.style.color = 'darkslategray';
+        icon.style.opacity = 1;
+        icon.style.color = 'black';
         if (type === 'undo') {
             map.undoIcon = icon;
         } else {
@@ -29,10 +29,6 @@ export const undoRedoControl = L.Control.extend({
         map.doubleClickZoom.disable();
 
         child.onclick = function (e) {
-
-            if (icon.style.opacity === 0.3) {
-                return;
-            }
 
             if (type === 'undo') {
                 undoHandler(map);
@@ -61,17 +57,16 @@ export const undoRedoControl = L.Control.extend({
             data.map.undoIcon.style.opacity = 1;
             data.map.undoIcon.style.color = 'black';
         }
-
     },
 
     onAdd: function (map) {
 
-        pubSub.subscribe('STACK_STATE_UPDATED', this.enableDisableButton);
-        pubSub.subscribe('POLYGON_OVERLAPS_OTHER_POLYGON', this.enableDisableButton);
-        pubSub.subscribe('UNDO_MERGED_POLYGON', this.enableDisableButton);
-        pubSub.subscribe('REDO_MERGED_POLYGON', this.enableDisableButton);
-        pubSub.subscribe('SIMPLE_POLYGON_CREATED', this.enableDisableButton);
-        pubSub.subscribe('POLYGON_EDITED_AND_IS_NON_OVERLAPPING', this.enableDisableButton);
+        // pubSub.subscribe('STACK_STATE_UPDATED', this.enableDisableButton);
+        // pubSub.subscribe('POLYGON_OVERLAPS_OTHER_POLYGON', this.enableDisableButton);
+        // pubSub.subscribe('UNDO_MERGED_POLYGON', this.enableDisableButton);
+        // pubSub.subscribe('REDO_MERGED_POLYGON', this.enableDisableButton);
+        // pubSub.subscribe('SIMPLE_POLYGON_CREATED', this.enableDisableButton);
+        // pubSub.subscribe('POLYGON_EDITED_AND_IS_NON_OVERLAPPING', this.enableDisableButton);
 
         const container = L.DomUtil.create('div', 'undo-redo-buttons-container');
         L.DomEvent.disableClickPropagation(container);
