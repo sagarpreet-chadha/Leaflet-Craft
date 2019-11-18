@@ -442,7 +442,7 @@ export default class FreeDraw extends FeatureGroup {
               return;
             }
             
-            createFor(map, Array.from(latLngs), options);
+            createFor(map, latLngsToTuple(Array.from(latLngs)), options);
 
             // Finally invoke the callback for the polygon regions.
             updateFor(map, "create");
