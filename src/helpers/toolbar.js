@@ -1,86 +1,118 @@
-import L from 'leaflet';
-import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND } from '../FreeDraw';
-import { toggleMode } from './ToolbarHelper';
+import L from "leaflet";
+import {
+  NONE,
+  CREATE,
+  EDIT,
+  DELETE,
+  DELETEMARKERS,
+  DELETEPOINT,
+  APPEND
+} from "../FreeDraw";
+import { toggleMode } from "./ToolbarHelper";
 
 export const customControl = L.Control.extend({
+  options: {
+    position: "topleft"
+  },
 
-    options: {
-        position: 'topleft'
-    },
+  initialize: function(options) {
+    this.mapOptions = options;
+  },
 
-    initialize: function (options) {
-        this.mapOptions = options;
-    },
+  addButton: function(container, mode, map, mapOptions, type, toolTip = "") {
+    const child = L.DomUtil.create("div", "edit-mode-button", container);
+    child.style.backgroundColor = "white";
+    child.title = toolTip;
 
-    addButton: function (container, mode, map, mapOptions, type, toolTip='') {
+    const icon = L.DomUtil.create("i", "material-icons", child);
+    icon.innerHTML = type;
 
-        const child = L.DomUtil.create('div', 'edit-mode-button', container);
-        child.style.backgroundColor = 'white';
-        child.title = toolTip;
-
-        const icon = L.DomUtil.create('i', 'material-icons', child);
-        icon.innerHTML = type;
-
-        if (mode === DELETEMARKERS) {
-            icon.style.opacity = 0.3;
-            icon.style.color = 'darkslategray';
-        } else {
-            icon.style.opacity = 1;
-            icon.style.color = 'black';
-        }
-
-        child.onclick = function() {
-
-            if(mode === NONE) {
-                 // disable all other buttons
-                 container.childNodes.forEach(element => {
-                    element.firstChild.style.opacity = 0.3;
-                    element.firstChild.style.color = 'darkslategray';
-                });
-                icon.style.opacity = 1;
-                icon.style.color = 'black';
-                toggleMode(mode, map, mapOptions);
-                return;
-            }
-
-            // toggle logic
-            if (icon.style.opacity == 0.3) {
-                if (mode === DELETEMARKERS) {
-                    // disable all other buttons
-                    container.childNodes.forEach(element => {
-                        element.firstChild.style.opacity = 0.3;
-                        element.firstChild.style.color = 'darkslategray';
-                    });
-                } else {
-                    container.childNodes[2].firstChild.style.opacity = 0.3;
-                    container.childNodes[2].firstChild.style.color = 'darkslategray';
-                }
-                icon.style.opacity = 1;
-                icon.style.color = 'black';
-            } else {
-                icon.style.opacity = 0.3;
-                icon.style.color = 'darkslategray';
-            }
-            
-            toggleMode(mode, map, mapOptions);
-            container.childNodes[3].firstChild.style.opacity = 1;
-            container.childNodes[3].firstChild.style.color = 'black';
-        };
-    },
-
-    onAdd: function (map) {
-
-        const container = L.DomUtil.create('div', 'edit-mode-buttons-container');
-        L.DomEvent.disableClickPropagation(container);
-
-        this.addButton(container, CREATE | EDIT | APPEND | DELETEPOINT, map, this.mapOptions, 'create', 'Add Polygon');
-        // this.addButton(container, EDIT, map, this.mapOptions, 'gesture', 'Edit Polygon');
-        this.addButton(container, DELETE, map, this.mapOptions, 'delete_forever', 'Delete Polygon');
-        // this.addButton(container, APPEND, map, this.mapOptions, 'add', 'Add Marker');
-        // this.addButton(container, DELETEPOINT, map, this.mapOptions, 'remove', 'Delete Marker');
-        this.addButton(container, DELETEMARKERS, map, this.mapOptions, 'delete_sweep', 'Delete Multiple Markers');
-        this.addButton(container, NONE, map, this.mapOptions, 'pan_tool', 'Disable all');
-
-        return container;
+    if (mode === DELETEMARKERS) {
+      icon.style.opacity = 0.3;
+      icon.style.color = "darkslategray";
+    } else {
+      icon.style.opacity = 1;
+      icon.style.color = "black";
     }
+
+    child.onclick = function() {
+      if (mode === NONE) {
+        // disable all other buttons
+        container.childNodes.forEach(element => {
+          element.firstChild.style.opacity = 0.3;
+          element.firstChild.style.color = "darkslategray";
+        });
+        icon.style.opacity = 1;
+        icon.style.color = "black";
+        toggleMode(mode, map, mapOptions);
+        return;
+      }
+
+      // toggle logic
+      if (icon.style.opacity == 0.3) {
+        if (mode === DELETEMARKERS) {
+          // disable all other buttons
+          container.childNodes.forEach(element => {
+            element.firstChild.style.opacity = 0.3;
+            element.firstChild.style.color = "darkslategray";
+          });
+        } else {
+          container.childNodes[2].firstChild.style.opacity = 0.3;
+          container.childNodes[2].firstChild.style.color = "darkslategray";
+        }
+        icon.style.opacity = 1;
+        icon.style.color = "black";
+      } else {
+        icon.style.opacity = 0.3;
+        icon.style.color = "darkslategray";
+      }
+
+      toggleMode(mode, map, mapOptions);
+      container.childNodes[3].firstChild.style.opacity = 1;
+      container.childNodes[3].firstChild.style.color = "black";
+    };
+  },
+
+  onAdd: function(map) {
+    const container = L.DomUtil.create("div", "edit-mode-buttons-container");
+    L.DomEvent.disableClickPropagation(container);
+
+    this.addButton(
+      container,
+      CREATE | EDIT | APPEND | DELETEPOINT,
+      map,
+      this.mapOptions,
+      "create",
+      "Add Polygon"
+    );
+    // this.addButton(container, EDIT, map, this.mapOptions, 'gesture', 'Edit Polygon');
+    this.addButton(
+      container,
+      DELETE,
+      map,
+      this.mapOptions,
+      "delete_forever",
+      "Delete Polygon"
+    );
+    // this.addButton(container, APPEND, map, this.mapOptions, 'add', 'Add Marker');
+    // this.addButton(container, DELETEPOINT, map, this.mapOptions, 'remove', 'Delete Marker');
+    this.addButton(
+      container,
+      DELETEMARKERS,
+      map,
+      this.mapOptions,
+      "delete_sweep",
+      "Delete Multiple Markers"
+    );
+    this.addButton(
+      container,
+      NONE,
+      map,
+      this.mapOptions,
+      "pan_tool",
+      "Disable all"
+    );
+
+    return container;
+  }
 });

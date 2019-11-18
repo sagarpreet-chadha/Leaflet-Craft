@@ -1,6 +1,12 @@
-import { DomUtil } from 'leaflet';
-import { edgesKey, modesKey, instanceKey, notifyDeferredKey, polygons } from '../FreeDraw';
-import { classesFor } from './Layer';
+import { DomUtil } from "leaflet";
+import {
+  edgesKey,
+  modesKey,
+  instanceKey,
+  notifyDeferredKey,
+  polygons
+} from "../FreeDraw";
+import { classesFor } from "./Layer";
 
 /**
  * @constant NONE
@@ -54,7 +60,8 @@ export const EDIT_APPEND = EDIT | APPEND;
  * @constant ALL
  * @type {number}
  */
-export const ALL = CREATE | EDIT | DELETE | APPEND | DELETEMARKERS | DELETEPOINT;
+export const ALL =
+  CREATE | EDIT | DELETE | APPEND | DELETEMARKERS | DELETEPOINT;
 
 /**
  * @method modeFor
@@ -64,44 +71,44 @@ export const ALL = CREATE | EDIT | DELETE | APPEND | DELETEMARKERS | DELETEPOINT
  * @return {Number}
  */
 export const modeFor = (map, mode, options) => {
+  // Update the mode.
+  map[modesKey] = mode;
 
-    // Update the mode.
-    map[modesKey] = mode;
+  // Fire the updated mode.
+  map[instanceKey].fire("mode", { mode });
 
-    // Fire the updated mode.
-    map[instanceKey].fire('mode', { mode });
+  // Disable the map if the `CREATE` mode is a default flag.
+  mode & CREATE
+    ? (map.dragging.disable(),
+      map.touchZoom.enable(),
+      map.doubleClickZoom.enable(),
+      map.scrollWheelZoom.enable())
+    : mode & DELETEMARKERS
+    ? (map.dragging.disable(),
+      map.touchZoom.disable(),
+      map.doubleClickZoom.disable(),
+      map.scrollWheelZoom.disable())
+    : (map.dragging.enable(),
+      map.touchZoom.enable(),
+      map.doubleClickZoom.enable(),
+      map.scrollWheelZoom.enable());
 
-    // Disable the map if the `CREATE` mode is a default flag.
-    mode & CREATE ? (map.dragging.disable(),
-    map.touchZoom.enable(),
-    map.doubleClickZoom.enable(),
-    map.scrollWheelZoom.enable()) : (mode & DELETEMARKERS ? (map.dragging.disable(),
-    map.touchZoom.disable(),
-    map.doubleClickZoom.disable(),
-    map.scrollWheelZoom.disable()) : (map.dragging.enable(),
-    map.touchZoom.enable(),
-    map.doubleClickZoom.enable(),
-    map.scrollWheelZoom.enable()));
-
-    Array.from(polygons.get(map)).forEach(polygon => {
-
-        polygon[edgesKey].forEach(edge => {
-
-            // Modify the edge class names based on whether edit mode is enabled.
-            ((mode & DELETEPOINT) || (mode & EDIT)) ? DomUtil.removeClass(edge._icon, 'disabled') : DomUtil.addClass(edge._icon, 'disabled');
-
-        });
-
+  Array.from(polygons.get(map)).forEach(polygon => {
+    polygon[edgesKey].forEach(edge => {
+      // Modify the edge class names based on whether edit mode is enabled.
+      mode & DELETEPOINT || mode & EDIT
+        ? DomUtil.removeClass(edge._icon, "disabled")
+        : DomUtil.addClass(edge._icon, "disabled");
     });
+  });
 
-    // Apply the conditional class names to the map container.
-    classesFor(map, mode);
+  // Apply the conditional class names to the map container.
+  classesFor(map, mode);
 
-    // Fire the event for having manipulated the polygons if the `hasManipulated` is `true` and the
-    // `notifyAfterEditExit` option is equal to `true`, and then reset the `notifyDeferredKey`.
-    options && options.notifyAfterEditExit && map[notifyDeferredKey]();
-    map[notifyDeferredKey] = () => {};
+  // Fire the event for having manipulated the polygons if the `hasManipulated` is `true` and the
+  // `notifyAfterEditExit` option is equal to `true`, and then reset the `notifyDeferredKey`.
+  options && options.notifyAfterEditExit && map[notifyDeferredKey]();
+  map[notifyDeferredKey] = () => {};
 
-    return mode;
-
+  return mode;
 };

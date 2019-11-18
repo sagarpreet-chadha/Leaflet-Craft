@@ -39,8 +39,7 @@ import {
 } from "./helpers/UndoRedo";
 import { customControl } from "./helpers/toolbar";
 import { undoRedoControl } from "./helpers/UndoRedoToolbar";
-import {undoHandler, redoHandler} from "./helpers/Handlers";
-
+import { undoHandler, redoHandler } from "./helpers/Handlers";
 
 /**
  * @constant polygons
@@ -48,8 +47,8 @@ import {undoHandler, redoHandler} from "./helpers/Handlers";
  */
 export const polygons = new WeakMap();
 
-const {publish, subscribe, clear} = PubSub();
-export const pubSub = {publish, subscribe};
+const { publish, subscribe, clear } = PubSub();
+export const pubSub = { publish, subscribe };
 
 /**
  * @constant defaultOptions
@@ -68,7 +67,7 @@ export const defaultOptions = {
   strokeWidth: 2,
   undoRedo: true,
   showUndoRedoBar: true,
-  showControlBar: true, 
+  showControlBar: true,
   onCreateStart: () => {},
   onCreateEnd: () => {},
   onEditStart: () => {},
@@ -121,21 +120,19 @@ export default class FreeDraw extends FeatureGroup {
   }
 
   toggleUndoRedoBar(show) {
-    if(show) {
+    if (show) {
       this.undoRedoBar = new undoRedoControl(this.options);
       this.map.addControl(this.undoRedoBar);
-    }
-    else {
+    } else {
       this.map.removeControl(this.undoRedoBar);
     }
   }
-  
+
   toggleControlBar(show) {
-    if(show) {
+    if (show) {
       this.controlBar = new customControl(this.options);
       this.map.addControl(this.controlBar);
-    }
-    else {
+    } else {
       this.map.removeControl(this.controlBar);
     }
   }
@@ -145,7 +142,7 @@ export default class FreeDraw extends FeatureGroup {
    * @param {Object} map
    * @return {void}
    */
-  onAdd(map) {    
+  onAdd(map) {
     // Memorise the map instance.
     this.map = map;
 
@@ -177,26 +174,26 @@ export default class FreeDraw extends FeatureGroup {
     this.listenForEvents(map, svg, this.options);
 
     if (this.options.undoRedo) {
-       this.history = UndoRedo(map);
+      this.history = UndoRedo(map);
       // Set Undo Redo Listeners
       this.history.attachListeners();
       pubSub.subscribe("Add_Undo_Redo", maintainStackStates);
-      if(this.options.showUndoRedoBar) {
-         //  map.addControl(new undoRedoControl(this.options));
-          this.toggleUndoRedoBar(true);
+      if (this.options.showUndoRedoBar) {
+        //  map.addControl(new undoRedoControl(this.options));
+        this.toggleUndoRedoBar(true);
       }
     }
 
-    pubSub.subscribe('create-start', this.options.onCreateStart);
-    pubSub.subscribe('create-end', this.options.onCreateEnd);
-    pubSub.subscribe('edit-start', this.options.onEditStart);
-    pubSub.subscribe('edit-end', this.options.onEditEnd);
-    pubSub.subscribe('remove-start', this.options.onRemoveStart);
-    pubSub.subscribe('remove-end', this.options.onRemoveEnd);
+    pubSub.subscribe("create-start", this.options.onCreateStart);
+    pubSub.subscribe("create-end", this.options.onCreateEnd);
+    pubSub.subscribe("edit-start", this.options.onEditStart);
+    pubSub.subscribe("edit-end", this.options.onEditEnd);
+    pubSub.subscribe("remove-start", this.options.onRemoveStart);
+    pubSub.subscribe("remove-end", this.options.onRemoveEnd);
 
-    if(this.options.showControlBar) {
+    if (this.options.showControlBar) {
       //  map.addControl(new customControl(this.options));
-        this.toggleControlBar(true);
+      this.toggleControlBar(true);
     }
   }
 
@@ -225,7 +222,6 @@ export default class FreeDraw extends FeatureGroup {
     mergedPolygonsMap.clear();
     // clear events
     clear();
-
   }
 
   /**
@@ -283,12 +279,12 @@ export default class FreeDraw extends FeatureGroup {
 
   toggleMode(mode = null) {
     // Set mode when passed `mode` is numeric, and then yield the current mode.
-    
+
     // Update the mode.
     this.map[modesKey] = mode;
 
     // Fire the updated mode.
-    this.map[instanceKey].fire('mode', { mode });
+    this.map[instanceKey].fire("mode", { mode });
   }
 
   /**
@@ -436,18 +432,18 @@ export default class FreeDraw extends FeatureGroup {
         if (create) {
           // ...And finally if we have any lat/lngs in our set then we can attempt to
           // create the polygon.
-          if(latLngs.size >= 3) {
+          if (latLngs.size >= 3) {
             const response = await pubSub.publish("create-start");
             if (response && response.interrupt) {
               return;
             }
-            
+
             createFor(map, latLngsToTuple(Array.from(latLngs)), options);
 
             // Finally invoke the callback for the polygon regions.
             updateFor(map, "create");
             pubSub.publish("create-end");
-            
+
             // Exit the `CREATE` mode if the options permit it.
             options.leaveModeAfterCreate && this.mode(this.mode() ^ CREATE);
           }
@@ -499,15 +495,22 @@ export default class FreeDraw extends FeatureGroup {
         if (newlatLngArr.length > 2) {
           p.setLatLngs(newlatLngArr);
 
-          const latLngs =  p.getLatLngs()[0];
+          const latLngs = p.getLatLngs()[0];
 
-          createFor(this.map,  latLngsToTuple([...latLngs, latLngs[0]]), this.options, true, p[polygonID], 0);
+          createFor(
+            this.map,
+            latLngsToTuple([...latLngs, latLngs[0]]),
+            this.options,
+            true,
+            p[polygonID],
+            0
+          );
         } else {
           undoMainStack.push(p[polygonID]);
           undoStackObject[p[polygonID]].push(null);
         }
       }
-      pubSub.publish('edit-end');
+      pubSub.publish("edit-end");
       return p;
     });
   }
@@ -562,13 +565,13 @@ export {
   DELETEPOINT
 } from "./helpers/Flags";
 
-export const clickUndo = (map) => {
+export const clickUndo = map => {
   undoHandler(map);
-}
+};
 
-export const clickRedo = (map) => {
+export const clickRedo = map => {
   redoHandler(map);
-}
+};
 
 if (typeof window !== "undefined") {
   // Attach to the `window` as `FreeDraw` if it exists, as this would prevent `new FreeDraw.default` when

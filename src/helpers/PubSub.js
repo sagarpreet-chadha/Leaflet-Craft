@@ -2,7 +2,7 @@ const PubSub = () => {
   let state = {};
 
   const publish = async (evtName, data) => {
-    console.log('published: ', evtName, data);
+    console.log("published: ", evtName, data);
     const promises = (state[evtName] || []).map(cb => {
       return Promise.resolve(cb(data));
     });
@@ -26,7 +26,9 @@ const PubSub = () => {
   return {
     publish,
     subscribe,
-    clear: () => {state = {}}
+    clear: () => {
+      state = {};
+    }
   };
 };
 

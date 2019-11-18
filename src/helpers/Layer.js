@@ -1,6 +1,14 @@
-import { DomUtil } from 'leaflet';
-import { polygons, instanceKey } from '../FreeDraw';
-import { NONE, CREATE, EDIT, DELETE, APPEND, DELETEMARKERS, DELETEPOINT } from './Flags';
+import { DomUtil } from "leaflet";
+import { polygons, instanceKey } from "../FreeDraw";
+import {
+  NONE,
+  CREATE,
+  EDIT,
+  DELETE,
+  APPEND,
+  DELETEMARKERS,
+  DELETEPOINT
+} from "./Flags";
 
 /**
  * @method updateFor
@@ -9,18 +17,14 @@ import { NONE, CREATE, EDIT, DELETE, APPEND, DELETEMARKERS, DELETEPOINT } from '
  * @return {void}
  */
 export const updateFor = (map, eventType) => {
+  const latLngs = Array.from(polygons.get(map)).map(polygon => {
+    // Ensure the polygon has been closed.
+    const latLngs = polygon.getLatLngs();
+    return [...latLngs[0], latLngs[0][0]];
+  });
 
-    const latLngs = Array.from(polygons.get(map)).map(polygon => {
-
-        // Ensure the polygon has been closed.
-        const latLngs = polygon.getLatLngs();
-        return [ ...latLngs[0], latLngs[0][0] ];
-
-    });
-
-    // Fire the current set of lat lngs.
-    map[instanceKey].fire('markers', { latLngs, eventType });
-
+  // Fire the current set of lat lngs.
+  map[instanceKey].fire("markers", { latLngs, eventType });
 };
 
 /**
@@ -30,33 +34,29 @@ export const updateFor = (map, eventType) => {
  * @return {void}
  */
 export const classesFor = (map, mode) => {
+  /**
+   * @constant modeMap
+   * @type {Object}
+   */
+  const modeMap = {
+    [NONE]: "mode-none",
+    [CREATE]: "mode-create",
+    [EDIT]: "mode-edit",
+    [DELETE]: "mode-delete",
+    [APPEND]: "mode-append",
+    [DELETEMARKERS]: "mode-edit",
+    [DELETEPOINT]: "mode-edit"
+  };
 
-    /**
-     * @constant modeMap
-     * @type {Object}
-     */
-    const modeMap = {
-        [NONE]: 'mode-none',
-        [CREATE]: 'mode-create',
-        [EDIT]: 'mode-edit',
-        [DELETE]: 'mode-delete',
-        [APPEND]: 'mode-append',
-        [DELETEMARKERS]: 'mode-edit',
-        [DELETEPOINT]: 'mode-edit'
-    };
+  Object.keys(modeMap).forEach(key => {
+    const className = modeMap[key];
+    const isModeActive = mode & key;
 
-    Object.keys(modeMap).forEach(key => {
+    // Remove the class name if it's set already on the map container.
+    DomUtil.removeClass(map._container, className);
 
-        const className = modeMap[key];
-        const isModeActive = mode & key;
-
-        // Remove the class name if it's set already on the map container.
-        DomUtil.removeClass(map._container, className);
-
-        // Apply the class names to the node container depending on whether the mode is active.
-        isModeActive && DomUtil.addClass(map._container, className);
-        mode === 0 && DomUtil.addClass(map._container, modeMap[NONE]);
-
-    });
-
+    // Apply the class names to the node container depending on whether the mode is active.
+    isModeActive && DomUtil.addClass(map._container, className);
+    mode === 0 && DomUtil.addClass(map._container, modeMap[NONE]);
+  });
 };
