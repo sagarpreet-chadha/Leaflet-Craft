@@ -1,6 +1,6 @@
 {
   "name": "leaflet-craft",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Zoopla inspired freehand polygon creation using Leaflet.js.",
   "source": "src/FreeDraw.js",
   "main": "dist/leaflet-freedraw.cjs.js",
@@ -43,6 +43,7 @@
   },
   "homepage": "https://github.com/sagarpreet-chadha/Leaflet-Craft",
   "dependencies": {
+    "@turf/simplify": "^5.1.5",
     "@turf/area": "6.0.1",
     "@turf/helpers": "6.1.4",
     "@turf/points-within-polygon": "5.1.5",

@@ -81,7 +81,7 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
     const concavedLatLngs = !preventMutations && options.concavePolygon ? concavePolygon(map, latLngs) : latLngs;
 
     // Simplify the polygon before adding it to the map.
-    const addedPolygons = limitReached ? [] : map.simplifyPolygon(concavedLatLngs).map(latLngs => {
+    const addedPolygons = limitReached ? [] : map.simplifyPolygon(concavedLatLngs, options).map(latLngs => {
 
         const polygon = new Polygon(latLngs, {
             ...defaultOptions, ...options, className: 'leaflet-polygon'

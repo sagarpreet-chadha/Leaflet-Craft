@@ -59,7 +59,7 @@ export const defaultOptions = {
   mode: ALL ^ DELETEMARKERS,
   smoothFactor: 0.3,
   elbowDistance: 10,
-  simplifyFactor: 1.1,
+  simplifyFactor: 0,
   mergePolygons: true,
   concavePolygon: true,
   maximumPolygons: Infinity,
@@ -234,7 +234,7 @@ export default class FreeDraw extends FeatureGroup {
    * @param {Object} [options = { concavePolygon: false }]
    * @return {Object}
    */
-  create(latLngs, options = { concavePolygon: false }) {
+  create(latLngs, options = { concavePolygon: false, simplifyFactor: 0}) {
     const created = createFor(this.map, latLngsToTuple(latLngs), {
       ...this.options,
       ...options
