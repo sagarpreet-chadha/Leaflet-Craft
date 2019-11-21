@@ -56,7 +56,7 @@ export const pubSub = {publish, subscribe};
  * @type {Object}
  */
 export const defaultOptions = {
-  mode: ALL ^ DELETEMARKERS,
+  mode: NONE,
   smoothFactor: 0.3,
   elbowDistance: 10,
   simplifyFactor: 0,
@@ -161,7 +161,7 @@ export default class FreeDraw extends FeatureGroup {
     polygons.set(map, new Set());
 
     // Set the initial mode.
-    modeFor(map, this.options.mode, this.options);
+    modeFor(map, 0, this.options);
 
     // Instantiate the SVG layer that sits on top of the map.
     const svg = (this.svg = select(map._container)

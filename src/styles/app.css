@@ -38,6 +38,6 @@
   color: var(--gray-4);
 }
 
-.edit-mode-button:hover {
+.edit-mode-buttons-container:hover {
   color: lightblue;
 }

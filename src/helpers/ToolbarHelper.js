@@ -41,3 +41,25 @@ export const toggleMode = (mode, map = false, options) => {
     modeFor(map, ScopeMode, options);
 
 };
+
+export const SetUnsetMode = (set, mode, map = false, options) => {
+
+    let ScopeMode = map[modesKey];
+
+    if(mode === NONE) {
+        ScopeMode = 0;
+        modeFor(map, ScopeMode, options);
+        return;
+    }
+
+    if(set) {
+        ScopeMode = mode;
+        modeFor(map, ScopeMode, options);
+        return;
+    } else {
+        ScopeMode = 0;
+        modeFor(map, ScopeMode, options);
+        return;
+    }
+
+};

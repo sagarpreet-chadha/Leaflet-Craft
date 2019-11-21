@@ -64,21 +64,21 @@ export default function createEdges(map, polygon, options) {
                 document.getElementById("popupButton").addEventListener("click", deleteMarker);
                 document.getElementById("popupButton").style.fontSize = 10;
                 document.getElementById("popupButton").style.fontWeight = 500;
-                document.getElementById("popupButton").style.borderRadius = 3;
-                document.getElementById("popupButton").style.borderColor = '#0065ff';
-                document.getElementById("popupButton").style.color = '#0065ff';
+                document.getElementById("popupButton").style.borderRadius = '5px';
+                document.getElementById("popupButton").style.background = '#0065ff';
+                document.getElementById("popupButton").style.color = 'white';
                 document.getElementById("popupButton").style.border = 1;
-                document.getElementById("popupButton").style.padding = '3px';
+                document.getElementById("popupButton").style.padding = '3px 7px';
                 document.getElementById("popupButton").style.cursor = 'pointer';
                 
                 document.getElementById("cancelPopupButton").addEventListener("click", closeMarkerPopup);
                 document.getElementById("cancelPopupButton").style.fontSize = 10;
                 document.getElementById("cancelPopupButton").style.fontWeight = 500;
-                document.getElementById("cancelPopupButton").style.borderRadius = 3;
-                document.getElementById("cancelPopupButton").style.borderColor = 'red';
-                document.getElementById("cancelPopupButton").style.color = 'red';
+                document.getElementById("cancelPopupButton").style.borderRadius = '5px';
+                document.getElementById("cancelPopupButton").style.background = 'red';
+                document.getElementById("cancelPopupButton").style.color = 'white';
                 document.getElementById("cancelPopupButton").style.border = 1;
-                document.getElementById("cancelPopupButton").style.padding = '3px';
+                document.getElementById("cancelPopupButton").style.padding = '3px 7px';
                 document.getElementById("cancelPopupButton").style.cursor = 'pointer';
             }
         });

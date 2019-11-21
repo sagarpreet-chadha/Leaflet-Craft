@@ -19,7 +19,7 @@ export const undoRedoControl = L.Control.extend({
         const icon = L.DomUtil.create('i', 'material-icons', child);
         icon.innerHTML = type;
         icon.style.opacity = 1;
-        icon.style.color = 'black';
+        icon.style.color = '#0065ff';
         if (type === 'undo') {
             map.undoIcon = icon;
         } else {
@@ -47,7 +47,7 @@ export const undoRedoControl = L.Control.extend({
             data.map.redoIcon.style.color = 'darkslategray';
         } else {
             data.map.redoIcon.style.opacity = 1;
-            data.map.redoIcon.style.color = 'black';
+            data.map.redoIcon.style.color = '#0065ff';
         }
 
         if (undoMainStack.empty()) {
@@ -55,7 +55,7 @@ export const undoRedoControl = L.Control.extend({
             data.map.undoIcon.style.color = 'darkslategray';
         } else {
             data.map.undoIcon.style.opacity = 1;
-            data.map.undoIcon.style.color = 'black';
+            data.map.undoIcon.style.color = '#0065ff';
         }
     },
 
