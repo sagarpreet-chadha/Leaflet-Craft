@@ -31,7 +31,7 @@ Extends https://github.com/Wildhoney/Leaflet.FreeDraw made by WildHoney and adds
 `export const polygonArea = Symbol('freedraw/polygonArea')`
 We use TURF Area function to calculate the area.
 
-6. Add Hooks:
+6. Added Hooks:
 
 We can subscribe to following Event listeners and can pass a callback function to be executed. Callback function can be asynchronous as well, also the return value should be **TRUE** to continue the event (create/edit/delete) else if your callback function returns **False** then that event is forfeited. 
 This is implemented by ES6 promise.
@@ -43,12 +43,21 @@ This is implemented by ES6 promise.
 * Polygon delete: Started
 * Polygon delete: Ended
 
+7. Underlying mathematical model is based on Turf library:
+
+Previously Clipper library was used which takes Zoom level into consideration and hence a polygon created at low zoom level using `create` function would get distorted due to the simplify polygon function of clipper. 
+Turf on the other hand takes lat/lon as input and is independent of zoom and pixel points.
+
+8. The library used PubSub model:
+
+PubSub acts as a central entity which pushed data to other entities which have subscribed to the EVENT being published.
+
+9. The react component for this library is available here: https://github.com/Sagarpreet/react-leaflet-craft
 
 Work in PROGRESS: 
 
 1. Conversion to Typescript.
 2. Adding functionality to create Polygon via clicking (similar to Leaflet.Draw).
-3. Extending React-Leaflet to support React apps.
 
 
 
