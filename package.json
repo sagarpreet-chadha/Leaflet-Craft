@@ -14,7 +14,7 @@
     "dev": "yarn clean:example && parcel example/index.html & rimraf dist",
     "clean:example": "rimraf example-dist",
     "example": "yarn clean:example && parcel build example/index.html  --out-dir example-dist --no-minify",
-    "build": "rimraf dist && rollup -c",
+    "build": "rimraf dist && rollup -c && rollup -c rollup-react.config.js  ",
     "test": "npm run lint && npm run spec",
     "spec": "ava && npm run example && mocha tests/functional/FreeDraw.test.js --compilers js:@babel/register",
     "lint": "xo src/*.js src/**/*.js",
@@ -43,20 +43,23 @@
   },
   "homepage": "https://github.com/sagarpreet-chadha/Leaflet-Craft",
   "dependencies": {
-    "@turf/simplify": "^5.1.5",
     "@turf/area": "6.0.1",
+    "@turf/clean-coords": "^6.0.1",
     "@turf/helpers": "6.1.4",
     "@turf/points-within-polygon": "5.1.5",
+    "@turf/simplify": "^5.1.5",
+    "@turf/union": "^5.1.5",
+    "@turf/unkink-polygon": "^5.1.5",
     "regenerator-runtime": "^0.13.2",
     "turf-intersect": "~3.0.12",
-    "turf-polygon": "~1.0.3",
-    "@turf/clean-coords": "^6.0.1",
-    "@turf/union": "^5.1.5",
-    "@turf/unkink-polygon": "^5.1.5"
+    "turf-polygon": "~1.0.3"
   },
   "peerDependencies": {
     "leaflet": "^1.2.0",
-    "ramda": "^0.22.1"
+    "ramda": "^0.22.1",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-leaflet": "^2.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -84,6 +87,9 @@
     "nightmare": "~3.0.1",
     "parcel": "^1.12.3",
     "ramda": "^0.22.1",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-leaflet": "^2.0.1",
     "rimraf": "~2.6.2",
     "rollup": "^1.11.3",
     "rollup-plugin-babel": "^4.3.2",
