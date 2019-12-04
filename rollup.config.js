@@ -13,21 +13,21 @@ module.exports = {
       format: "cjs",
       exports: "named",
       sourcemap: true,
-      external: ["ramda", "leaflet"]
+      external: ["ramda", "leaflet", "react", "react-dom"]
     },
     {
       file: "dist/leaflet-freedraw.esm.js",
       format: "esm",
       sourcemap: true,
       exports: "named",
-      external: ["ramda", "leaflet"]
+      external: ["ramda", "leaflet", "react", "react-dom"]
     },
     {
       file: "dist/leaflet-freedraw.web.js",
       format: "cjs",
       sourcemap: true,
       exports: "named",
-      external: ["ramda", "leaflet"]
+      external: ["ramda", "leaflet", "react", "react-dom"]
     },
     {
       file: "dist/leaflet-freedraw.iife.js",
@@ -35,7 +35,7 @@ module.exports = {
       sourcemap: true,
       name: "LeafletFreeDraw",
       exports: "named",
-      external: ["ramda", "leaflet"]
+      external: ["ramda", "leaflet", "react", "react-dom"]
     }
   ],
   plugins: [
