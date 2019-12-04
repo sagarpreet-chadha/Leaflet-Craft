@@ -1,4 +1,4 @@
-import LeafletFreedraw, { clickUndo, clickRedo } from '../../dist/leaflet-freedraw.cjs.js';
+import LeafletFreedraw, { clickUndo, clickRedo } from '../../src/FreeDraw';
 import { MapLayer, withLeaflet } from 'react-leaflet';
 
 class FreeCraft extends MapLayer {
@@ -52,5 +52,7 @@ class FreeCraft extends MapLayer {
     return null;
   }
 }
+
+export const FreeDraw =  withLeaflet(FreeCraft);
 
 export default withLeaflet(FreeCraft);

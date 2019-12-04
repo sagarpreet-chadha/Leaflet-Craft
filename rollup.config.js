@@ -3,9 +3,10 @@ import commonjs from "rollup-plugin-commonjs";
 import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import postcss from "rollup-plugin-postcss";
+import multiEntry from "rollup-plugin-multi-entry";
 
 module.exports = {
-  input: "src/FreeDraw.js",
+  input: ["src/FreeDraw.js", "implementations/react/FreeDraw.jsx"],
   output: [
     {
       file: "dist/leaflet-freedraw.cjs.js",
@@ -38,10 +39,23 @@ module.exports = {
     }
   ],
   plugins: [
+    multiEntry(),
     resolve(),
     commonjs({
       namedExports: {
+        "node_modules/react/index.js": [
+          "createContext",
+          "forwardRef",
+          "useContext",
+          "Component",
+          "Fragment",
+          "Children",
+          "cloneElement"
+        ],
         "node_modules/leaflet/dist/leaflet-src.js": [
+          "Control",
+          "Circle",
+          "CircleMarker",
           "DomUtil",
           "Point",
           "DivIcon",
@@ -49,7 +63,21 @@ module.exports = {
           "DomEvent",
           "Polygon",
           "LineUtil",
-          "FeatureGroup"
+          "FeatureGroup",
+          "GeoJSON",
+          "GridLayer",
+          "ImageOverlay",
+          "latLngBounds",
+          "LayerGroup",
+          "Map",
+          "Polyline",
+          "Popup",
+          "Rectangle",
+          "SVGOverlay",
+          "TileLayer",
+          "Tooltip",
+          "VideoOverlay",
+          "Layer"
         ],
         "node_modules/ramda/dist/ramda.js": [
           "flatten",
@@ -57,6 +85,9 @@ module.exports = {
           "head",
           "complement",
           "identical"
+        ],
+        "node_modules/react-dom/index.js": [
+          "createPortal"
         ]
       }
     }),
