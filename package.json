@@ -55,7 +55,7 @@
     "@turf/unkink-polygon": "^5.1.5"
   },
   "peerDependencies": {
-    "leaflet": "^1.2.0",
+    "leaflet": "^1.6.0",
     "ramda": "^0.22.1"
   },
   "devDependencies": {
