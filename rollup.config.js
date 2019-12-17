@@ -12,51 +12,71 @@ module.exports = {
       format: "cjs",
       exports: "named",
       sourcemap: true,
-      external: ["ramda", "leaflet"]
+      external: ['ramda', 'leaflet', 'react', 'react-leaflet'],
     },
     {
       file: "dist/leaflet-freedraw.esm.js",
       format: "esm",
       sourcemap: true,
-      exports: "named",
-      external: ["ramda", "leaflet"]
+      exports: 'named',
+      external: ['ramda', 'leaflet', 'react', 'react-leaflet'],
     },
     {
       file: "dist/leaflet-freedraw.web.js",
       format: "cjs",
       sourcemap: true,
-      exports: "named",
-      external: ["ramda", "leaflet"]
+      exports: 'named',
+      external: ['ramda', 'leaflet', 'react', 'react-leaflet'],
     },
     {
       file: "dist/leaflet-freedraw.iife.js",
       format: "iife",
       sourcemap: true,
-      name: "LeafletFreeDraw",
-      exports: "named",
-      external: ["ramda", "leaflet"]
+      name: 'LeafletFreeDraw',
+      exports: 'named',
+      external: ['ramda', 'leaflet', 'react', 'react-leaflet'],
     }
   ],
   plugins: [
     resolve(),
     commonjs({
       namedExports: {
-        "node_modules/leaflet/dist/leaflet-src.js": [
-          "DomUtil",
-          "Point",
-          "DivIcon",
-          "Marker",
-          "DomEvent",
-          "Polygon",
-          "LineUtil",
-          "FeatureGroup"
+        'node_modules/leaflet/dist/leaflet-src.js': [
+          'DomUtil',
+          'Point',
+          'DivIcon',
+          'Marker',
+          'DomEvent',
+          'Polygon',
+          'LineUtil',
+          'FeatureGroup',
+          'Control',
+          'Circle',
+          'CircleMarker',
+          'GeoJSON',
+          'GridLayer',
+          'ImageOverlay',
+          'latLngBounds',
+          'LayerGroup',
+          'Map',
+          'Polyline',
+          'Popup',
+          'Rectangle',
+          'SVGOverlay',
+          'TileLayer',
+          'Tooltip',
+          'VideoOverlay',
+          'Layer'
         ],
-        "node_modules/ramda/dist/ramda.js": [
-          "flatten",
-          "compose",
-          "head",
-          "complement",
-          "identical"
+        'node_modules/ramda/dist/ramda.js': ['flatten', 'compose', 'head', 'complement', 'identical'],
+        'node_modules/react/index.js': [
+          'createContext',
+          'useContext',
+          'forwardRef',
+          'Component',
+          'Fragment',
+          'Children',
+          'cloneElement'
         ]
       }
     }),
@@ -66,6 +86,6 @@ module.exports = {
     babel({
       exclude: "node_modules/**"
     }),
-    terser()
+    // terser()
   ]
 };
