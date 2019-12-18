@@ -63,6 +63,7 @@
     "react-leaflet": "^2.6.1"
   },
   "devDependencies": {
+    "rollup": "^1.27.13",
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
@@ -84,23 +85,22 @@
     "es6-weak-map": "^2.0.1",
     "express": "~4.16.3",
     "jsdom": "^9.8.3",
+    "leaflet": "^1.6.0",
     "mocha": "~3.5.3",
     "nightmare": "~3.0.1",
     "parcel": "^1.12.3",
+    "ramda": "^0.22.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "rimraf": "~2.6.2",
-    "rollup": "^1.11.3",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-node-resolve": "^4.2.4",
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-terser": "^4.0.4",
+    "rollup-plugin-visualizer": "^3.3.1",
     "sinon": "^1.17.6",
-    "xo": "^0.17.1",
-    "leaflet": "^1.6.0",
-    "ramda": "^0.22.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-leaflet": "^2.6.1"
+    "xo": "^0.17.1"
   },
   "ava": {
     "files": [

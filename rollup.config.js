@@ -3,34 +3,49 @@ import commonjs from "rollup-plugin-commonjs";
 import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import postcss from "rollup-plugin-postcss";
+import visualizer from 'rollup-plugin-visualizer';
+import pkg from './package.json';
+const globals = {
+  react: 'React',
+  'react-dom': 'ReactDOM',
+  leaflet: 'L',
+  'react-leaflet': 'ReactLeaflet'
+}
+
 module.exports = {
   input: "src/FreeDraw.js",
+  external: dep => Object.keys(pkg.peerDependencies).includes(dep),
   output: [
-    {
-      file: "dist/leaflet-freedraw.esm.js",
-      format: "esm",
-      sourcemap: true,
-      exports: 'named',
-      external: ['ramda', 'leaflet', 'react', 'react-leaflet', 'react-dom'],
-    },
+    // {
+    //   file: "dist/leaflet-freedraw.esm.js",
+    //   format: "esm",
+    //   sourcemap: true,
+    //   exports: 'named',
+    //   external: pkg.peerDependencies,
+    //   globals
+    // },
     {
       file: "dist/leaflet-freedraw.web.js",
-      format: "cjs",
+      format: "umd",
       sourcemap: true,
       exports: 'named',
-      external: ['ramda', 'leaflet', 'react', 'react-leaflet', 'react-dom'],
+      name: 'ReactLeafletCraft',
+      globals
     },
-    {
-      file: "dist/leaflet-freedraw.iife.js",
-      format: "iife",
-      sourcemap: true,
-      name: 'LeafletFreeDraw',
-      exports: 'named',
-      external: ['ramda', 'leaflet', 'react', 'react-leaflet', 'react-dom'],
-    }
+    // {
+    //   file: "dist/leaflet-freedraw.iife.js",
+    //   format: "iife",
+    //   sourcemap: true,
+    //   name: 'LeafletFreeDraw',
+    //   exports: 'named',
+    //   external: pkg.peerDependencies,
+    //   globals
+    // }
   ],
   plugins: [
-    resolve(),
+    resolve({
+      only: Object.keys(pkg.dependencies)
+    }),
     commonjs({
       namedExports: {
         'node_modules/leaflet/dist/leaflet-src.js': [
@@ -72,9 +87,9 @@ module.exports = {
         ],
         'node_modules/react-dom/index.js': [
           'createPortal'
-        ]
-      },
-      include: 'node_modules/**'
+        ],
+
+      }
     }),
     postcss({
       plugins: []
@@ -82,6 +97,8 @@ module.exports = {
     babel({
       exclude: "node_modules/**"
     }),
+    // peerDepsExternal(),
+    visualizer()
     // terser()
   ]
 };
