@@ -20,3 +20,4 @@ yarn.lock
 .cache/
 example-dist/
 dist/
+integrations/

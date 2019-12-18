@@ -41,7 +41,6 @@ import { customControl } from "./helpers/toolbar";
 import { undoRedoControl } from "./helpers/UndoRedoToolbar";
 import {undoHandler, redoHandler} from "./helpers/Handlers";
 
-
 /**
  * @constant polygons
  * @type {WeakMap}

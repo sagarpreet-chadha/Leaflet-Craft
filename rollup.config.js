@@ -3,30 +3,22 @@ import commonjs from "rollup-plugin-commonjs";
 import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import postcss from "rollup-plugin-postcss";
-
 module.exports = {
   input: "src/FreeDraw.js",
   output: [
-    {
-      file: "dist/leaflet-freedraw.cjs.js",
-      format: "cjs",
-      exports: "named",
-      sourcemap: true,
-      external: ['ramda', 'leaflet', 'react', 'react-leaflet'],
-    },
     {
       file: "dist/leaflet-freedraw.esm.js",
       format: "esm",
       sourcemap: true,
       exports: 'named',
-      external: ['ramda', 'leaflet', 'react', 'react-leaflet'],
+      external: ['ramda', 'leaflet', 'react', 'react-leaflet', 'react-dom'],
     },
     {
       file: "dist/leaflet-freedraw.web.js",
       format: "cjs",
       sourcemap: true,
       exports: 'named',
-      external: ['ramda', 'leaflet', 'react', 'react-leaflet'],
+      external: ['ramda', 'leaflet', 'react', 'react-leaflet', 'react-dom'],
     },
     {
       file: "dist/leaflet-freedraw.iife.js",
@@ -34,7 +26,7 @@ module.exports = {
       sourcemap: true,
       name: 'LeafletFreeDraw',
       exports: 'named',
-      external: ['ramda', 'leaflet', 'react', 'react-leaflet'],
+      external: ['ramda', 'leaflet', 'react', 'react-leaflet', 'react-dom'],
     }
   ],
   plugins: [
@@ -77,8 +69,12 @@ module.exports = {
           'Fragment',
           'Children',
           'cloneElement'
+        ],
+        'node_modules/react-dom/index.js': [
+          'createPortal'
         ]
-      }
+      },
+      include: 'node_modules/**'
     }),
     postcss({
       plugins: []

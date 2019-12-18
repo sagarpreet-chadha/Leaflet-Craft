@@ -1,5 +1,5 @@
-import ReactLeafletCraft from './ReactLeafeltCraft';
+import ReactLeafletCraft from './ReactLeafletCraft';
 
 export {
   ReactLeafletCraft
-};
+}
