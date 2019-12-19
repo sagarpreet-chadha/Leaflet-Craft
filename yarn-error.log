@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/ankeet.maini/.nvm/versions/node/v11.10.1/bin/node /Users/ankeet.maini/.yarn/bin/yarn.js add @rollup/plugin-node-resolve
+  /Users/ankeet.maini/.nvm/versions/node/v11.10.1/bin/node /Users/ankeet.maini/.yarn/bin/yarn.js build
 
 PATH: 
   /Users/ankeet.maini/.yarn/bin:/Users/ankeet.maini/.config/yarn/global/node_modules/.bin:/Users/ankeet.maini/Library/Android/sdk/tools:/Users/ankeet.maini/Library/Android/sdk/platform-tools:LOCAL_PATH:/Users/ankeet.maini/platform-tools/:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Users/ankeet.maini/.yarn/bin:/Users/ankeet.maini/.config/yarn/global/node_modules/.bin:/Users/ankeet.maini/Library/Android/sdk/tools:/Users/ankeet.maini/Library/Android/sdk/platform-tools:LOCAL_PATH:/Users/ankeet.maini/.nvm/versions/node/v11.10.1/bin:/Users/ankeet.maini/platform-tools/
@@ -14,17 +14,12 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@%5E4.3.2: Request "https://registry.yarnpkg.com/@%5E4.3.2" returned a 405
-      at Request.params.callback [as _callback] (/Users/ankeet.maini/.yarn/lib/cli.js:66935:18)
-      at Request.self.callback (/Users/ankeet.maini/.yarn/lib/cli.js:140564:22)
-      at Request.emit (events.js:197:13)
-      at Request.<anonymous> (/Users/ankeet.maini/.yarn/lib/cli.js:141536:10)
-      at Request.emit (events.js:197:13)
-      at IncomingMessage.<anonymous> (/Users/ankeet.maini/.yarn/lib/cli.js:141458:12)
-      at Object.onceWrapper (events.js:285:13)
-      at IncomingMessage.emit (events.js:202:15)
-      at endReadableNT (_stream_readable.js:1129:12)
-      at processTicksAndRejections (internal/process/next_tick.js:76:17)
+  SyntaxError: /Users/ankeet.maini/Code/Leaflet-Craft/package.json: Unexpected token } in JSON at position 1928
+      at JSON.parse (<anonymous>)
+      at /Users/ankeet.maini/.yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/Users/ankeet.maini/.yarn/lib/cli.js:304:30)
+      at /Users/ankeet.maini/.yarn/lib/cli.js:315:13
 
 npm manifest: 
   {
@@ -32,12 +27,13 @@ npm manifest:
     "version": "1.1.6",
     "description": "Zoopla inspired freehand polygon creation using Leaflet.js.",
     "source": "src/FreeDraw.js",
-    "main": "dist/leaflet-freedraw.cjs.js",
     "module": "dist/leaflet-freedraw.esm.js",
-    "browser": "dist/leaflet-freedraw.web.js",
+    "main": "dist/leaflet-freedraw.web.js",
     "unpkg": "dist/leaflet-freedraw.iife.js",
     "files": [
-      "dist"
+      ".babelrc",
+      "dist/*",
+      "src/*"
     ],
     "scripts": {
       "dev": "yarn clean:example && parcel example/index.html & rimraf dist",
@@ -82,7 +78,10 @@ npm manifest:
       "@turf/unkink-polygon": "^5.1.5",
       "regenerator-runtime": "^0.13.2",
       "turf-intersect": "~3.0.12",
-      "turf-polygon": "~1.0.3"
+      "turf-polygon": "~1.0.3",
+      "concavehull": "^0.1.6",
+      "d3-selection": "^1.4.1",
+      "d3-shape": "^1.3.7",
     },
     "peerDependencies": {
       "leaflet": "^1.6.0",
@@ -92,7 +91,6 @@ npm manifest:
       "react-leaflet": "^2.6.1"
     },
     "devDependencies": {
-      "rollup": "^1.27.13",
       "@babel/cli": "^7.7.5",
       "@babel/core": "^7.7.5",
       "@babel/plugin-syntax-dynamic-import": "^7.2.0",
@@ -106,9 +104,6 @@ npm manifest:
       "babel-loader": "~8.0.5",
       "chai": "^3.5.0",
       "compression": "~1.7.2",
-      "concavehull": "^0.1.6",
-      "d3-selection": "~1.2.0",
-      "d3-shape": "^1.0.4",
       "es6-set": "^0.1.4",
       "es6-symbol": "^3.1.0",
       "es6-weak-map": "^2.0.1",
@@ -123,7 +118,10 @@ npm manifest:
       "react-dom": "^16.12.0",
       "react-leaflet": "^2.6.1",
       "rimraf": "~2.6.2",
-      "": "^4.3.2",
+      "rollup": "^1.27.13",
+      "rollup-plugin-babel": "^4.3.2",
+      "rollup-plugin-commonjs": "^9.3.4",
+      "rollup-plugin-node-resolve": "^4.2.4",
       "rollup-plugin-postcss": "^2.0.3",
       "rollup-plugin-terser": "^4.0.4",
       "rollup-plugin-visualizer": "^3.3.1",
@@ -3228,15 +3226,15 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/d3-path/-/d3-path-1.0.8.tgz#4a0606a794d104513ec4a8af43525f374b278719"
     integrity sha512-J6EfUNwcMQ+aM5YPOB8ZbgAZu6wc82f/0WFxrxwV6Ll8wBwLaHLKCqQ5Imub02JriCVVdPjgI+6P3a4EWJCxAg==
   
-  d3-selection@~1.2.0:
-    version "1.2.0"
-    resolved "https://registry.yarnpkg.com/d3-selection/-/d3-selection-1.2.0.tgz#1b8ec1c7cedadfb691f2ba20a4a3cfbeb71bbc88"
-    integrity sha512-xW2Pfcdzh1gOaoI+LGpPsLR2VpBQxuFoxvrvguK8ZmrJbPIVvfNG6pU6GNfK41D6Qz15sj61sbW/AFYuukwaLQ==
+  d3-selection@^1.4.1:
+    version "1.4.1"
+    resolved "https://registry.yarnpkg.com/d3-selection/-/d3-selection-1.4.1.tgz#98eedbbe085fbda5bafa2f9e3f3a2f4d7d622a98"
+    integrity sha512-BTIbRjv/m5rcVTfBs4AMBLKs4x8XaaLkwm28KWu9S2vKNqXkXt2AH2Qf0sdPZHjFxcWg/YL53zcqAz+3g4/7PA==
   
-  d3-shape@^1.0.4:
-    version "1.3.5"
-    resolved "https://registry.yarnpkg.com/d3-shape/-/d3-shape-1.3.5.tgz#e81aea5940f59f0a79cfccac012232a8987c6033"
-    integrity sha512-VKazVR3phgD+MUCldapHD7P9kcrvPcexeX/PkMJmkUov4JM8IxsSg1DvbYoYich9AtdTsa5nNk2++ImPiDiSxg==
+  d3-shape@^1.3.7:
+    version "1.3.7"
+    resolved "https://registry.yarnpkg.com/d3-shape/-/d3-shape-1.3.7.tgz#df63801be07bc986bc54f63789b4fe502992b5d7"
+    integrity sha512-EUkvKjqPFUAZyOlhY5gzCxCeI0Aep04LwIRpsZ/mLFelJiUfnK56jo5JMDSE7yyP2kLSb6LtF+S5chMk7uqPqw==
     dependencies:
       d3-path "1"
   
