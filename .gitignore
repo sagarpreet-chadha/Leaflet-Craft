@@ -21,3 +21,6 @@ yarn.lock
 example-dist/
 dist/
 integrations/
+
+stats.html
+yarn-error.log
