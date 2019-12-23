@@ -41,6 +41,10 @@ function returnIntersections(map, polygons) {
 
     const analysis = polygons.reduce((accum, polygon) => {
 
+        if(typeof polygon === "undefined") {
+            return accum;
+        }
+
         const latLngs = polygon.getLatLngs()[0];
         const turfPolygon = toTurfPolygon(latLngs);
 
