@@ -12,7 +12,7 @@ export const customControl = L.Control.extend({
         this.mapOptions = options;
     },
 
-    addButton: function (container, mode, map, mapOptions, type, toolTip, numberKey) {
+    addButton: function (container, mode, map, mapOptions, type, toolTip='') {
 
         const child = L.DomUtil.create('div', 'edit-mode-button', container);
         child.style.backgroundColor = 'white';
@@ -28,13 +28,6 @@ export const customControl = L.Control.extend({
             icon.style.opacity = 0.3;
             icon.style.color = 'darkslategray';
         }
-
-        // document.addEventListener('keydown', (e) => {
-        //     if((e.ctrlKey || e.metaKey) && e.key === numberKey) {
-        //         child.click();
-        //     }
-        // });
-
 
         child.onclick = function() {
 
@@ -104,13 +97,13 @@ export const customControl = L.Control.extend({
         const container = L.DomUtil.create('div', 'edit-mode-buttons-container');
         L.DomEvent.disableClickPropagation(container);
 
-        this.addButton(container, NONE, map, this.mapOptions, 'pan_tool', 'Disable all', '1');
-        this.addButton(container, CREATE | EDIT | APPEND | DELETEPOINT, map, this.mapOptions, 'create', 'Add Polygon' , '2');
+        this.addButton(container, NONE, map, this.mapOptions, 'pan_tool', 'Disable all');
+        this.addButton(container, CREATE | EDIT | APPEND | DELETEPOINT, map, this.mapOptions, 'create', 'Add Polygon');
         // this.addButton(container, EDIT, map, this.mapOptions, 'gesture', 'Edit Polygon');
-        this.addButton(container, DELETE, map, this.mapOptions, 'delete', 'Delete Polygon', '3');
+        this.addButton(container, DELETE, map, this.mapOptions, 'delete', 'Delete Polygon');
         // this.addButton(container, APPEND, map, this.mapOptions, 'add', 'Add Marker');
         // this.addButton(container, DELETEPOINT, map, this.mapOptions, 'remove', 'Delete Marker');
-        this.addButton(container, DELETEMARKERS, map, this.mapOptions, 'blur_off', 'Delete Multiple Markers', '4');
+        this.addButton(container, DELETEMARKERS, map, this.mapOptions, 'blur_off', 'Delete Multiple Markers');
 
         return container;
     }

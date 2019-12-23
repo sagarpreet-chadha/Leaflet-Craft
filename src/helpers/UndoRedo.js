@@ -70,11 +70,11 @@ export default function UndoRedo(map) {
 
     const undoRedoEvent = e => {
         // UNDO listener
-            if (e.key === 'z' && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
+            if (e.key === 'z' && e.metaKey && !e.shiftKey) {
                 undoHandler(map);
             }
         // REDO listener
-            if (e.key === 'z' && (e.metaKey || e.ctrlKey) && e.shiftKey) {
+            if (e.key === 'z' && e.metaKey && e.shiftKey) {
                 redoHandler(map);
             }
         }
