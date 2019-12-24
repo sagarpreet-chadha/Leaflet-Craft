@@ -106,12 +106,14 @@ export default (map, polygons, options) => {
         // Also if Self-intersecting case found, clear all Stacks and Undo-Redo feature will not work until we have removed all Self-intersections.
         !updateStackState && clearAllStacks();
 
-        const polygonsToCreate = isMultiPolygon
-            ? coordinates.map(coords => {
-                createFor(map, coords[0], options, true,  0, 2, updateStackState); // pid = 0 bcoz to create new Polygon
-                })
-            : createFor(map, coordinates[0], options, true,  0, 2, updateStackState); // pid = 0 bcoz to create new Polygon
-        return polygonsToCreate;
+        if(isMultiPolygon) {
+            return coordinates.map(coords => {
+                return createFor(map, coords[0], options, true,  0, 2, updateStackState); // pid = 0 bcoz to create new Polygon
+            });
+        } else {
+            const merged_poly = createFor(map, coordinates[0], options, true,  0, 2, updateStackState); // pid = 0 bcoz to create new Polygon
+            return merged_poly;
+        }
     }
 
     return [];
