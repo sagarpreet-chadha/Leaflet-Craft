@@ -112,7 +112,7 @@ export default (map, polygons, options) => {
             });
         } else {
             const merged_poly = createFor(map, coordinates[0], options, true,  0, 2, updateStackState); // pid = 0 bcoz to create new Polygon
-            return merged_poly;
+            return [merged_poly];
         }
     }
 
