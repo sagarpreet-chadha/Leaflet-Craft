@@ -41,7 +41,6 @@ import { customControl } from "./helpers/toolbar";
 import { undoRedoControl } from "./helpers/UndoRedoToolbar";
 import {undoHandler, redoHandler} from "./helpers/Handlers";
 
-
 /**
  * @constant polygons
  * @type {WeakMap}
@@ -570,17 +569,4 @@ export const clickRedo = (map) => {
   redoHandler(map);
 }
 
-if (typeof window !== "undefined") {
-  // Attach to the `window` as `FreeDraw` if it exists, as this would prevent `new FreeDraw.default` when
-  // using the web version.
-  window.FreeDraw = FreeDraw;
-  FreeDraw.CREATE = CREATE;
-  FreeDraw.EDIT = EDIT;
-  FreeDraw.DELETE = DELETE;
-  FreeDraw.DELETEMARKERS = DELETEMARKERS;
-  FreeDraw.DELETEPOINT = DELETEPOINT;
-  FreeDraw.APPEND = APPEND;
-  FreeDraw.EDIT_APPEND = EDIT_APPEND;
-  FreeDraw.NONE = NONE;
-  FreeDraw.ALL = ALL;
-}
+export * from './integrations';
