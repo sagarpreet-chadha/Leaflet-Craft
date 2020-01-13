@@ -6,6 +6,7 @@
   "module": "dist/leaflet-freedraw.esm.js",
   "main": "dist/leaflet-freedraw.web.js",
   "unpkg": "dist/leaflet-freedraw.iife.js",
+  "types": "types/main.d.ts",
   "files": [
     ".babelrc",
     "dist/*",
