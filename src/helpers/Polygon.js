@@ -87,7 +87,9 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
             ...defaultOptions, ...options, className: 'leaflet-polygon'
         }).addTo(map);
 
-        const turfPolygon = TurfPolygon([latLngs]);
+        const reversed_latLng = latLngs.map(ll => [ll[1], ll[0]]);
+
+        const turfPolygon = TurfPolygon([reversed_latLng]);
         const areaPolygon = turfArea(turfPolygon);
 
         polygon[polygonArea] = areaPolygon;  // area in meter square
