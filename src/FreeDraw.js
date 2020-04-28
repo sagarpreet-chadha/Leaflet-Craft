@@ -39,6 +39,7 @@ import {
 } from "./helpers/UndoRedo";
 import { customControl } from "./helpers/toolbar";
 import { undoRedoControl } from "./helpers/UndoRedoToolbar";
+import { distanceControl } from "./helpers/distanceToolBar";
 import {undoHandler, redoHandler} from "./helpers/Handlers";
 
 /**
@@ -88,6 +89,8 @@ export const instanceKey = Symbol("freedraw/instance");
  */
 export const modesKey = Symbol("freedraw/modes");
 
+export const distanceFlag = Symbol("freedraw/distanceFlag");
+
 /**
  * @constant notifyDeferredKey
  * @type {Symbol}
@@ -132,10 +135,13 @@ export default class FreeDraw extends FeatureGroup {
   toggleControlBar(show) {
     if(show) {
       this.controlBar = new customControl(this.options);
+      this.distanceBar = new distanceControl(this.options);
       this.map.addControl(this.controlBar);
+      this.map.addControl(this.distanceBar)
     }
     else {
       this.map.removeControl(this.controlBar);
+      this.map.removeControl(this.distanceBar);
     }
   }
 
