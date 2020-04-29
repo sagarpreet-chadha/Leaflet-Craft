@@ -1,6 +1,6 @@
 {
   "name": "leaflet-craft",
-  "version": "4.0.5",
+  "version": "4.1.5",
   "description": "Zoopla inspired freehand polygon creation using Leaflet.js.",
   "source": "src/FreeDraw.js",
   "module": "dist/leaflet-freedraw.esm.js",
