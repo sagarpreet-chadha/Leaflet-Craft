@@ -18,8 +18,7 @@ src/.DS_Store
 yarn.lock
 
 .cache/
-example-dist/
-dist/
+
 
 stats.html
 yarn-error.log
