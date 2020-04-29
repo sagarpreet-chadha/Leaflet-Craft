@@ -22,6 +22,7 @@ import {
   DELETEMARKERS,
   DELETEPOINT,
   EDIT_APPEND,
+  DISTANCE_FLAG,
   NONE,
   ALL,
   modeFor
@@ -39,7 +40,8 @@ import {
 } from "./helpers/UndoRedo";
 import { customControl } from "./helpers/toolbar";
 import { undoRedoControl } from "./helpers/UndoRedoToolbar";
-import { distanceControl } from "./helpers/distanceToolBar";
+// import { distanceControl } from "./helpers/distanceToolBar";
+import {rulerLayer} from "./ruler/ruler"
 import {undoHandler, redoHandler} from "./helpers/Handlers";
 
 /**
@@ -135,13 +137,13 @@ export default class FreeDraw extends FeatureGroup {
   toggleControlBar(show) {
     if(show) {
       this.controlBar = new customControl(this.options);
-      this.distanceBar = new distanceControl(this.options);
+      this.rulerBar = new rulerLayer(this.options);
       this.map.addControl(this.controlBar);
-      this.map.addControl(this.distanceBar)
+      this.map.addControl(this.rulerBar)
     }
     else {
       this.map.removeControl(this.controlBar);
-      this.map.removeControl(this.distanceBar);
+      this.map.removeControl(this.rulerBar);
     }
   }
 
@@ -334,7 +336,7 @@ export default class FreeDraw extends FeatureGroup {
      * @return {void}
      */
     const mouseDown = event => {
-      if (map[modesKey] & DELETEMARKERS) {
+      if ((map[modesKey] & DELETEMARKERS) || (map[modesKey] & DISTANCE_FLAG)) {
         const latLngs = new Set();
         const lineIterator = this.createPath(
           svg,
@@ -368,7 +370,12 @@ export default class FreeDraw extends FeatureGroup {
           // Clear the SVG canvas.
           svg.selectAll("*").remove();
 
-          this.colorMarkersTobeDeleted(latLngs);
+          if(map[modesKey] & DELETEMARKERS) {
+            this.colorMarkersTobeDeleted(latLngs);
+          } else {
+          // DISTANCE CALCULATION POLYLINE GENERATION LOGIC:
+          this.distanceLineTobeCreated(latLngs);
+          }
         };
 
         // Clear up the events when the user releases the mouse.
@@ -381,6 +388,7 @@ export default class FreeDraw extends FeatureGroup {
 
         return;
       }
+
 
       if (!(map[modesKey] & CREATE)) {
         // Polygons can only be created when the mode includes create.
@@ -469,6 +477,16 @@ export default class FreeDraw extends FeatureGroup {
     };
 
     map.on("mousedown touchstart", mouseDown);
+  }
+
+  distanceLineTobeCreated(latLngs) {
+    if (!latLngs || latLngs.size < 2) {
+      return;
+    }
+    latLngs = Array.from(latLngs).map(model => [model.lat, model.lng]);
+    console.log("coordinates", latLngs);
+
+    const polyline = L.polyline(latLngs, {color: 'red'}).addTo(this.map);
   }
 
   colorMarkersTobeDeleted(latLngs) {
@@ -564,7 +582,8 @@ export {
   NONE,
   ALL,
   DELETEMARKERS,
-  DELETEPOINT
+  DELETEPOINT,
+  DISTANCE_FLAG
 } from "./helpers/Flags";
 
 export const clickUndo = (map) => {

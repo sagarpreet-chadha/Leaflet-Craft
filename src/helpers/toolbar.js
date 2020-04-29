@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND } from '../FreeDraw';
+import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND, DISTANCE_FLAG } from '../FreeDraw';
 import {  SetUnsetMode } from './ToolbarHelper';
 
 export const customControl = L.Control.extend({
@@ -44,9 +44,19 @@ export const customControl = L.Control.extend({
                 return;
             }
 
+            
+
             // toggle logic
             if (icon.style.opacity == 0.3) {
-                if (mode === DELETEMARKERS) {
+                if(mode === DISTANCE_FLAG) {
+                    // disable all other buttons
+                    container.childNodes.forEach(element => {
+                        element.firstChild.style.opacity = 0.3;
+                        element.firstChild.style.color = 'darkslategray';
+                    });
+
+                }
+                else if (mode === DELETEMARKERS) {
                     // disable all other buttons
                     container.childNodes.forEach(element => {
                         element.firstChild.style.opacity = 0.3;
@@ -104,6 +114,8 @@ export const customControl = L.Control.extend({
         // this.addButton(container, APPEND, map, this.mapOptions, 'add', 'Add Marker');
         // this.addButton(container, DELETEPOINT, map, this.mapOptions, 'remove', 'Delete Marker');
         this.addButton(container, DELETEMARKERS, map, this.mapOptions, 'blur_off', 'Delete Multiple Markers');
+
+        this.addButton(container, DISTANCE_FLAG, map, this.mapOptions, 'timeline', 'Distance');
 
         return container;
     }

@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import { stopPropagation } from './ToolbarHelper';
+import { modeFor } from './Flags';
 
 export const distanceControl = L.Control.extend({
 
@@ -15,13 +16,23 @@ export const distanceControl = L.Control.extend({
 
         const icon = L.DomUtil.create('i', 'material-icons', child);
         icon.innerHTML = type;
-        icon.style.opacity = 1;
-        icon.style.color = '#0065ff';
+        icon.style.opacity = 0.3;
+        icon.style.color = 'darkslategray';
 
         map.distanceIcon = icon;
         map.doubleClickZoom.disable();
 
         child.onclick = function (e) {
+
+             // toggle logic
+             if (icon.style.opacity == 0.3) {
+                icon.style.opacity = 1;
+                icon.style.color = '#0065ff';
+             }
+             else {
+                icon.style.opacity = 0.3;
+                icon.style.color = 'darkslategray';
+             }
 
             // if (type === 'undo') {
             //     undoHandler(map);
