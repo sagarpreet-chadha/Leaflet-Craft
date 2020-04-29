@@ -123,9 +123,9 @@ export const customControl = L.Control.extend({
                 icon.style.opacity = 0.3;
                 icon.style.color = 'darkslategray';
 
-                // if(mode === DISTANCE_FLAG) {
-                //     map.removeControl(this.rulerBar)
-                // }
+                if(mode === DISTANCE_FLAG) {
+                    togglefunction(self);
+                }
 
                 container.childNodes[0].firstChild.style.opacity = 1 ;
                 container.childNodes[0].firstChild.style.color = '#0065ff';
@@ -164,7 +164,7 @@ export const customControl = L.Control.extend({
         self._clickedPoints = [];
         self._totalLength = 0;
         if (self._choice){
-            self._map.doubleClickZoom.disable();
+            // self._map.doubleClickZoom.disable();
           L.DomEvent.on(self._map._container, 'keydown', self._escape, self);
           L.DomEvent.on(self._map._container, 'dblclick', self._closePath, self);
           self.options.container.classList.add("leaflet-ruler-clicked");
@@ -179,7 +179,7 @@ export const customControl = L.Control.extend({
           self._map.on('mousemove', self._moving, self);
         }
         else {
-            self._map.doubleClickZoom.enable();
+            // self._map.doubleClickZoom.enable();
           L.DomEvent.off(self._map._container, 'keydown', self._escape, self);
           L.DomEvent.off(self._map._container, 'dblclick', self._closePath, self);
           self.options.container.classList.remove("leaflet-ruler-clicked");
