@@ -137,13 +137,13 @@ export default class FreeDraw extends FeatureGroup {
   toggleControlBar(show) {
     if(show) {
       this.controlBar = new customControl(this.options);
-      this.rulerBar = new rulerLayer(this.options);
+      // this.rulerBar = new rulerLayer(this.options);
       this.map.addControl(this.controlBar);
-      this.map.addControl(this.rulerBar)
+      // this.map.addControl(this.rulerBar)
     }
     else {
       this.map.removeControl(this.controlBar);
-      this.map.removeControl(this.rulerBar);
+      // this.map.removeControl(this.rulerBar);
     }
   }
 
@@ -336,7 +336,7 @@ export default class FreeDraw extends FeatureGroup {
      * @return {void}
      */
     const mouseDown = event => {
-      if ((map[modesKey] & DELETEMARKERS) || (map[modesKey] & DISTANCE_FLAG)) {
+      if ((map[modesKey] & DELETEMARKERS)) {
         const latLngs = new Set();
         const lineIterator = this.createPath(
           svg,
