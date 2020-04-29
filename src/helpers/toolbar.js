@@ -62,6 +62,10 @@ export const customControl = L.Control.extend({
         child.onclick = function() {
 
             if(mode === NONE) {
+                // disable RULER
+                self._choice = true;
+                togglefunction(self);
+
                  // disable all other buttons
                  container.childNodes.forEach(element => {
                     element.firstChild.style.opacity = 0.3;
@@ -76,6 +80,11 @@ export const customControl = L.Control.extend({
 
             // toggle logic
             if (icon.style.opacity == 0.3) {
+                
+                // disable RULER
+                  self._choice = true;
+                  togglefunction(self);
+
                 if(mode === DISTANCE_FLAG) {
                     // disable all other buttons
                     container.childNodes.forEach(element => {
@@ -129,7 +138,6 @@ export const customControl = L.Control.extend({
 
                 container.childNodes[0].firstChild.style.opacity = 1 ;
                 container.childNodes[0].firstChild.style.color = '#0065ff';
-
                 SetUnsetMode(false, mode, map, mapOptions);
             }
         };
