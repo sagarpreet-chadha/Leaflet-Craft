@@ -8,6 +8,8 @@ import { classesFor } from './Layer';
  */
 export const NONE = 0;
 
+
+
 /**
  * @constant CREATE
  * @type {Number}
@@ -44,6 +46,8 @@ export const DELETEMARKERS = 16;
  */
 export const DELETEPOINT = 32;
 
+export const DISTANCE_FLAG = 64;
+
 /**
  * @constant EDIT_APPEND
  * @type {Number}
@@ -72,13 +76,16 @@ export const modeFor = (map, mode, options) => {
     map[instanceKey].fire('mode', { mode });
 
     // Disable the map if the `CREATE` mode is a default flag.
-    mode & CREATE ? (map.dragging.disable(),
+    (mode & CREATE) ? (map.dragging.disable(),
     map.touchZoom.enable(),
     map.doubleClickZoom.enable(),
     map.scrollWheelZoom.enable()) : (mode & DELETEMARKERS ? (map.dragging.disable(),
     map.touchZoom.disable(),
     map.doubleClickZoom.disable(),
-    map.scrollWheelZoom.disable()) : (map.dragging.enable(),
+    map.scrollWheelZoom.disable()) : (mode & DISTANCE_FLAG) ? (map.dragging.disable(),
+    map.touchZoom.disable(),
+    map.doubleClickZoom.disable(),
+    map.scrollWheelZoom.disable()) :  (map.dragging.enable(),
     map.touchZoom.enable(),
     map.doubleClickZoom.enable(),
     map.scrollWheelZoom.enable()));

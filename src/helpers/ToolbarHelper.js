@@ -1,4 +1,4 @@
-import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND } from './Flags';
+import { NONE, CREATE, EDIT, DELETE, DELETEMARKERS, DELETEPOINT, APPEND, DISTANCE_FLAG } from './Flags';
 import {modesKey} from '../FreeDraw'
 import { modeFor } from './Flags';
 
@@ -51,6 +51,8 @@ export const SetUnsetMode = (set, mode, map = false, options) => {
         modeFor(map, ScopeMode, options);
         return;
     }
+
+    console.log(mode);
 
     if(set) {
         ScopeMode = mode;
