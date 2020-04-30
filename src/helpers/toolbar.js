@@ -166,16 +166,25 @@ export const customControl = L.Control.extend({
         return container;
     },
 
+    onRemove: function() {
+        // L.DomEvent.off(this.options.container, 'click', this._toggleMeasure, this);
+          // disable RULER
+          this._choice = true;
+          this._toggleMeasure(this);
+      },
+
     _toggleMeasure: function(self) {
+        console.log('toggleMeasure');
+        console.log(self._choice);
         self._choice = !self._choice;
         self._clickedLatLong = null;
         self._clickedPoints = [];
         self._totalLength = 0;
-        if (self._choice){
-            // self._map.doubleClickZoom.disable();
-          L.DomEvent.on(self._map._container, 'keydown', self._escape, self);
-          L.DomEvent.on(self._map._container, 'dblclick', self._closePath, self);
-          self.options.container.classList.add("leaflet-ruler-clicked");
+        if (self._choice) {
+            self._map && self._map.doubleClickZoom.disable();
+            self._map && L.DomEvent.on(self._map._container, 'keydown', self._escape, self);
+            self._map && L.DomEvent.on(self._map._container, 'dblclick', self._closePath, self);
+            self.options && self.options.container && self.options.container.classList.add("leaflet-ruler-clicked");
           self._clickCount = 0;
           self._tempLine = L.featureGroup().addTo(self._allLayers);
           self._tempPoint = L.featureGroup().addTo(self._allLayers);
@@ -188,9 +197,9 @@ export const customControl = L.Control.extend({
         }
         else {
             // self._map.doubleClickZoom.enable();
-          L.DomEvent.off(self._map._container, 'keydown', self._escape, self);
-          L.DomEvent.off(self._map._container, 'dblclick', self._closePath, self);
-          self.options.container.classList.remove("leaflet-ruler-clicked");
+        //   L.DomEvent.off(self._map._container, 'keydown', self._escape, self);
+        //   L.DomEvent.off(self._map._container, 'dblclick', self._closePath, self);
+        self.options && self.options.container && self.options.container.classList.remove("leaflet-ruler-clicked");
           self._map.removeLayer(self._allLayers);
           self._allLayers = L.layerGroup();
         //   this._map._container.style.cursor = this._defaultCursor;
@@ -247,13 +256,18 @@ export const customControl = L.Control.extend({
       _escape: function(e) {
         if (e.keyCode === 27){
           if (this._clickCount > 0){
+            console.log('closepath')
             this._closePath();
           }
-          else {
-            this._choice = true;
-            this._toggleMeasure(this);
-          }
+        //   else {
+        //       console.log('I here')
+        //     this._choice = true;
+        //     this._toggleMeasure(this);
+        //   }
         }
+      },
+      removeRuler: function() {
+
       },
       _calculateBearingAndDistance: function() {
         var f1 = this._clickedLatLong.lat, l1 = this._clickedLatLong.lng, f2 = this._movingLatLong.lat, l2 = this._movingLatLong.lng;
@@ -277,6 +291,7 @@ export const customControl = L.Control.extend({
         };
       },
       _closePath: function() {
+          console.log('closepath')
         this._map.removeLayer(this._tempLine);
         this._map.removeLayer(this._tempPoint);
         this._choice = false;
