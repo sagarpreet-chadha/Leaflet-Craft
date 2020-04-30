@@ -139,6 +139,8 @@ export default class FreeDraw extends FeatureGroup {
     }
     else {
       this.map.removeControl(this.controlBar);
+      // this._choice = true;
+      // this.map.removeRuler()
     }
   }
 
