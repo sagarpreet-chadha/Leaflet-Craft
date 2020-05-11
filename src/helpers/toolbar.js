@@ -63,6 +63,7 @@ export const customControl = L.Control.extend({
 
             if(mode === NONE) {
                 // disable RULER
+                self._closePath();
                 self._choice = true;
                 togglefunction(self);
 
@@ -82,6 +83,7 @@ export const customControl = L.Control.extend({
             if (icon.style.opacity == 0.3) {
                 
                 // disable RULER
+                  self._closePath();
                   self._choice = true;
                   togglefunction(self);
 
@@ -132,9 +134,10 @@ export const customControl = L.Control.extend({
                 icon.style.opacity = 0.3;
                 icon.style.color = 'darkslategray';
 
-                if(mode === DISTANCE_FLAG) {
-                    togglefunction(self);
-                }
+                // disable RULER
+                self._closePath();
+                self._choice = true;
+                togglefunction(self);
 
                 container.childNodes[0].firstChild.style.opacity = 1 ;
                 container.childNodes[0].firstChild.style.color = '#0065ff';
@@ -191,20 +194,22 @@ export const customControl = L.Control.extend({
           self._pointLayer = L.featureGroup().addTo(self._allLayers);
           self._polylineLayer = L.featureGroup().addTo(self._allLayers);
           self._allLayers.addTo(self._map);
+          
           self._map._container.style.cursor = 'crosshair';
+          
           self._map.on('click', self._clicked, self);
           self._map.on('mousemove', self._moving, self);
         }
         else {
             // self._map.doubleClickZoom.enable();
-        //   L.DomEvent.off(self._map._container, 'keydown', self._escape, self);
-        //   L.DomEvent.off(self._map._container, 'dblclick', self._closePath, self);
+          L.DomEvent.off(self._map._container, 'keydown', self._escape, self);
+          L.DomEvent.off(self._map._container, 'dblclick', self._closePath, self);
         self.options && self.options.container && self.options.container.classList.remove("leaflet-ruler-clicked");
-          self._map.removeLayer(self._allLayers);
-          self._allLayers = L.layerGroup();
-        //   this._map._container.style.cursor = this._defaultCursor;
+        self._map.removeLayer(self._allLayers);
+        self._allLayers = L.layerGroup();
+        // document.body.style.cursor = "pointer";
         self._map.off('click', self._clicked, self);
-          self._map.off('mousemove', self._moving, self);
+        self._map.off('mousemove', self._moving, self);
         }
       },
       _clicked: function(e) {
@@ -292,8 +297,8 @@ export const customControl = L.Control.extend({
       },
       _closePath: function() {
           console.log('closepath')
-        this._map.removeLayer(this._tempLine);
-        this._map.removeLayer(this._tempPoint);
+          this._tempLine && this._map.removeLayer(this._tempLine);
+          this._tempPoint && this._map.removeLayer(this._tempPoint);
         this._choice = false;
         L.DomEvent.on(this.options.container, 'click', this._toggleMeasure, this);
         this._toggleMeasure(this);
