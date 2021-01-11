@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8" />
+    <title>Leaflet Craft</title>
+
+
+    <link rel="stylesheet" href="./example/css/default.css" />
+    <link rel="stylesheet" href="./example/css/global-styles.css" />
+
+
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script src="./node_modules/leaflet-craft/dist/leaflet-freedraw.iife.js"></script>
+    
+
+    <style>
+    #map { height: 380px; }
+    </style>
+
+</head>
+
+<body >
+    <div id="map"></div>
+<script>
+let FreeDraw = require("leaflet-craft")
+const map = new L.Map("map").setView([51.505, -0.09], 13);
+const freeDraw = new FreeDraw();
+ map.addLayer(freeDraw);
+</script>
+    
+</body>
+</html>
