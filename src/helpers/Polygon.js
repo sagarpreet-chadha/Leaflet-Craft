@@ -1,7 +1,5 @@
 import { LineUtil, Point, Polygon, DomEvent } from 'leaflet';
 import turfArea from '@turf/area';
-import createPolygon from 'turf-polygon';
-import { compose, head } from 'ramda';
 import { defaultOptions, edgesKey, modesKey, polygons, rawLatLngKey, polygonID, polygonArea } from '../FreeDraw';
 import { updateFor } from './Layer';
 import createEdges from './Edges';
@@ -9,7 +7,8 @@ import { DELETE, APPEND } from './Flags';
 import handlePolygonClick from './Polygon';
 import concavePolygon from './Concave';
 import mergePolygons, { isIntersectingPolygon } from './Merge';
-import { pubSub } from './PubSub';
+import { pubSub } from '../FreeDraw';
+import {polygon as TurfPolygon} from '@turf/helpers'
 
 /**
  * @method appendEdgeFor
@@ -54,10 +53,7 @@ const appendEdgeFor = (map, polygon, options, { parts, newPoint, startPoint, end
     polygon[edgesKey].map(edge => map.removeLayer(edge));
     polygon[edgesKey] = createEdges(map, polygon, options);
 
-};
-
-const latLngsToTuple = latLngs => {
-    return latLngs.map(model => [model.lat, model.lng]);
+    pubSub.publish('edit-end');
 };
 
 /**
@@ -71,7 +67,7 @@ const latLngsToTuple = latLngs => {
 export const createFor = (map, latLngs, options = defaultOptions, preventMutations = false, pid = 0, from = 1, updateStackState = true) => {
     // when new Polygon is created, then pid = 0.
     if (!pid) {
-        if (createFor.count === undefined) {
+        if (createFor.count === undefined || createFor.count >= 100) {
             createFor.count = 1;
         } else {
             createFor.count ++;
@@ -84,16 +80,17 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
     // Apply the concave hull algorithm to the created polygon if the options allow.
     const concavedLatLngs = !preventMutations && options.concavePolygon ? concavePolygon(map, latLngs) : latLngs;
 
-    const toTurfPolygon = compose(createPolygon, x => [x], x => [...x, head(x)], latLngsToTuple);
-
     // Simplify the polygon before adding it to the map.
-    const addedPolygons = limitReached ? [] : map.simplifyPolygon(map, concavedLatLngs, options).map(latLngs => {
+    const addedPolygons = limitReached ? [] : map.simplifyPolygon(concavedLatLngs, options).map(latLngs => {
 
         const polygon = new Polygon(latLngs, {
             ...defaultOptions, ...options, className: 'leaflet-polygon'
         }).addTo(map);
 
-        const turfPolygon = toTurfPolygon(Array.from(latLngs));
+        const reversed_latLng = latLngs.map(ll => [ll[1], ll[0]]);
+
+        const turfPolygon = TurfPolygon([reversed_latLng]);
+        
         const areaPolygon = turfArea(turfPolygon);
 
         polygon[polygonArea] = areaPolygon;  // area in meter square
@@ -138,14 +135,13 @@ export const createFor = (map, latLngs, options = defaultOptions, preventMutatio
         const addedMergedPolygons = mergePolygons(map, Array.from(polygons.get(map)), options);
 
         // Clear the set, and added all of the merged polygons into the master set.
-        addedMergedPolygons.forEach(polygon => polygons.get(map).add(polygon));
+        addedMergedPolygons.forEach(polygon => polygons.get(map).add(polygon[0]));
 
         return addedMergedPolygons;
 
     }
 
     return addedPolygons;
-
 };
 
 /**
@@ -213,7 +209,14 @@ export default (map, polygon, options) => {
         const isDeleteAndAppend = Boolean(mode & DELETE && mode & APPEND);
 
         // Partially apply the remove and append functions.
-        const removePolygon = () => removeFor(map, polygon);
+        const removePolygon = async () => {
+            const response = await pubSub.publish("remove-start");
+            if (response && response.interrupt) {
+                return;
+            }
+            removeFor(map, polygon);
+            pubSub.publish("remove-end");
+        }
         const appendEdge = () => appendEdgeFor(map, polygon, options, { parts, newPoint, startPoint, endPoint });
 
         switch (true) {

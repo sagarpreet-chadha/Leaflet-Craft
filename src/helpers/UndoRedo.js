@@ -1,5 +1,5 @@
 import Stack from './Stack';
-import { pubSub } from './PubSub';
+import { pubSub } from '../Freedraw';
 import { mergedPolygonCreatedHandler, mergePolygonUndoHandler, mergePolygonRedoHandler, newPolygonCreatedHandler, existingPolygonEditedHandler, undoHandler, redoHandler } from './Handlers';
 
 // Undo MAIN Stack that stores the sequence in which Polygons are added/edited.
@@ -55,6 +55,7 @@ export function maintainStackStates(data) {
     }
     // console.log("UNDO Stack : " + undoMainStack.show());
     // console.log("REDO Stack : " + redoMainStack.show());
+   
 }
 
 export function clearAllStacks() {
@@ -65,20 +66,25 @@ export function clearAllStacks() {
 
 }
 
-export default function UndoRedo() {
+export default function UndoRedo(map) {
+
+    const undoRedoEvent = e => {
+        // UNDO listener
+            if (e.key === 'z' && e.metaKey && !e.shiftKey) {
+                undoHandler(map);
+            }
+        // REDO listener
+            if (e.key === 'z' && e.metaKey && e.shiftKey) {
+                redoHandler(map);
+            }
+        }
 
     return {
-        attachListeners(map) {
-            document.addEventListener('keydown', e => {
-            // UNDO listener
-                if (e.key === 'z' && e.metaKey && !e.shiftKey) {
-                    undoHandler(map);
-                }
-            // REDO listener
-                if (e.key === 'z' && e.metaKey && e.shiftKey) {
-                    redoHandler(map);
-                }
-            });
+        attachListeners() {
+            document.addEventListener('keydown', undoRedoEvent);
+        },
+        removeListeners() {
+            document.removeEventListener('keydown', undoRedoEvent);
         }
     };
 }

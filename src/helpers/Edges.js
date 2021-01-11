@@ -3,8 +3,9 @@ import { polygons, modesKey, notifyDeferredKey, polygonID } from '../FreeDraw';
 import { updateFor } from './Layer';
 import { CREATE, EDIT, DELETEPOINT } from './Flags';
 import mergePolygons, { fillPolygon } from './Merge';
-import { latLngsToClipperPoints } from './Simplify';
 import { createFor, removeFor } from './Polygon';
+import { pubSub } from '../FreeDraw';
+import { latLngsToTuple } from './Utils';
 
 /**
  * @method createEdges
@@ -15,48 +16,77 @@ import { createFor, removeFor } from './Polygon';
  */
 export default function createEdges(map, polygon, options) {
 
-    /**
-     * @method fetchLayerPoints
-     * @param polygon {Object}
-     * @return {Array}
-     */
-    const fetchLayerPoints = polygon => {
-
-        return polygon.getLatLngs()[0].map(latLng => {
-            return map.latLngToLayerPoint(latLng);
-        });
-
-    };
-
-    const markers = fetchLayerPoints(polygon).map(point => {
+    const markers = polygon.getLatLngs()[0].map(latLng => {
 
         const mode = map[modesKey];
         const icon = new DivIcon({ className: `leaflet-edge ${((mode & EDIT) || (mode & DELETEPOINT)) ? '' : 'disabled'}`.trim() });
-        const latLng = map.layerPointToLatLng(point);
         const marker = new Marker(latLng, { icon }).addTo(map);
 
         marker.on('contextmenu', () => {
 
             if (map[modesKey] & DELETEPOINT) {
-                const newMarkers = markers.filter(m => (m !== marker));
-                const latLngArr = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
 
-                removeFor(map, polygon);
+                const deleteMarker = () => {
 
-                polygon.setLatLngs(latLngArr);
-                const points = latLngsToClipperPoints(map, polygon.getLatLngs()[0]);
+                    const newMarkers = markers.filter(m => (m !== marker));
+                    const latLngArr = newMarkers.map(m => [m.getLatLng().lat, m.getLatLng().lng]);
 
-                const newLatLngs = points.map(model => map.layerPointToLatLng(new Point(model.X, model.Y)));
+                    removeFor(map, polygon);
 
-                createFor(map, newLatLngs, options, true, polygon[polygonID], 0);
+                   polygon.setLatLngs(latLngArr);
 
+                   const latLngs = polygon.getLatLngs()[0];
+
+                   createFor(map, latLngsToTuple([...latLngs, latLngs[0]]), options, true, polygon[polygonID], 0);
+
+                    
+                    pubSub.publish('edit-end');
+
+                    document.getElementById("popupButton").removeEventListener("click", deleteMarker);
+                    document.getElementById("cancelPopupButton").removeEventListener("click", closeMarkerPopup);
+
+                    map.closePopup();
+                }
+
+                const closeMarkerPopup = () => {
+
+                    document.getElementById("popupButton").removeEventListener("click", deleteMarker);
+                    document.getElementById("cancelPopupButton").removeEventListener("click", closeMarkerPopup);
+                    map.closePopup();
+                }
+
+                const contentPopup = L.popup()
+                .setContent("<b>Delete marker?</b><br><br> &nbsp; <button id='popupButton'> Yes </button> &nbsp; <button id='cancelPopupButton'> No </button>")
+
+
+                marker.bindPopup(contentPopup).openPopup();
+                
+                document.getElementById("popupButton").addEventListener("click", deleteMarker);
+                document.getElementById("popupButton").style.fontSize = 10;
+                document.getElementById("popupButton").style.fontWeight = 500;
+                document.getElementById("popupButton").style.borderRadius = '5px';
+                document.getElementById("popupButton").style.background = '#0065ff';
+                document.getElementById("popupButton").style.color = 'white';
+                document.getElementById("popupButton").style.border = 1;
+                document.getElementById("popupButton").style.padding = '3px 7px';
+                document.getElementById("popupButton").style.cursor = 'pointer';
+                
+                document.getElementById("cancelPopupButton").addEventListener("click", closeMarkerPopup);
+                document.getElementById("cancelPopupButton").style.fontSize = 10;
+                document.getElementById("cancelPopupButton").style.fontWeight = 500;
+                document.getElementById("cancelPopupButton").style.borderRadius = '5px';
+                document.getElementById("cancelPopupButton").style.background = 'red';
+                document.getElementById("cancelPopupButton").style.color = 'white';
+                document.getElementById("cancelPopupButton").style.border = 1;
+                document.getElementById("cancelPopupButton").style.padding = '3px 7px';
+                document.getElementById("cancelPopupButton").style.cursor = 'pointer';
             }
         });
 
         // Disable the propagation when you click on the marker.
         DomEvent.disableClickPropagation(marker);
 
-        marker.on('mousedown', function mouseDown(e) {
+        marker.on('mousedown', async function mouseDown(e) {
 
             if (e.originalEvent.which === 3 && (map[modesKey] & DELETEPOINT)) {
                 return;
@@ -68,6 +98,14 @@ export default function createEdges(map, polygon, options) {
                 map.off('mousedown', mouseDown);
                 return;
 
+            }
+
+            if (map[modesKey] & EDIT) {
+                // Fire edit start event
+                const response = await pubSub.publish('edit-start');
+                if (response && response.interrupt) {
+                    return;
+                }
             }
 
             // Disable the map dragging as otherwise it's difficult to reposition the edge.
@@ -112,6 +150,11 @@ export default function createEdges(map, polygon, options) {
                     // Re-enable the dragging of the map only if created mode is not enabled.
                     map.dragging.enable();
 
+                }
+
+                if (map[modesKey] & EDIT) {
+                    // Fire edit start event
+                    pubSub.publish('edit-end');
                 }
 
                 // Stop listening to the events.
