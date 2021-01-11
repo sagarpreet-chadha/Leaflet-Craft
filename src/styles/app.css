@@ -30,6 +30,7 @@
 }
 
 .undo-redo-buttons-container {
+  top: 400px;
   position: absolute;
   width: 50px;
   z-index: 400;

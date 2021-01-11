@@ -7,7 +7,7 @@ import { pubSub } from '../Freedraw';
 export const undoRedoControl = L.Control.extend({
 
     options: {
-        position: 'topleft'
+        position: 'topright'
     },
 
     addButton: function (container, map, type, toolTip='') {
